@@ -1781,6 +1781,7 @@ int thermodynamics_output_summary(
     break;
 
   //TODO: 输出信息
+  case reio_mine:
   case reio_camb:
   case reio_half_tanh:
     switch (pth->reio_z_or_tau) {

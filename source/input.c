@@ -2135,6 +2135,7 @@ int input_read_parameters_general(struct file_content * pfc,
 
   /** 8) Reionization parametrization */
   /* Read */
+  //TODO: 增加自己的reio parametrization
   class_call(parser_read_string(pfc,"reio_parametrization",&string1,&flag1,errmsg),
              errmsg,
              errmsg);
@@ -2170,6 +2171,7 @@ int input_read_parameters_general(struct file_content * pfc,
     /* nothing to be read*/
     break;
 
+  //TODO: 针对自定义的parametrization添加变量
     /** 8.a) Reionization parameters if reio_parametrization=reio_camb */
   case reio_camb:
   case reio_half_tanh:
@@ -5635,6 +5637,7 @@ int input_default_params(struct background *pba,
 
   /** 8) Parametrization of reionization */
   pth->reio_parametrization=reio_camb;
+  //TODO: 对于自己加的参数，要设置一个default值
   /** 8.a) 'reio_camb' or 'reio_half_tanh' case */
   pth->reio_z_or_tau=reio_z;
   pth->z_reio=7.6711;

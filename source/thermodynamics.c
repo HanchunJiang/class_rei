@@ -2225,6 +2225,7 @@ int thermodynamics_reionization_evolve_with_tau(
   ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_redshift] = z_sup;
   /* maximum possible starting redshift */
   switch (pth->reio_parametrization) {
+  //TODO: 只有camb和half_tanh有tau，所以自定义的函数能不能输入tau还是个问题
   case reio_camb:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_z_start_max;
     break;
@@ -4109,6 +4110,7 @@ int thermodynamics_reionization_function(
     break;
 
     /** - implementation of ionization function similar to the one in CAMB */
+  //TODO: 实际上x_e在这里定义
   case reio_camb:
 
     /** - --> case z > z_reio_start */

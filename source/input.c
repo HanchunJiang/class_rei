@@ -2178,6 +2178,7 @@ int input_read_parameters_general(struct file_content * pfc,
     /** 8.a) Reionization parameters if reio_parametrization=reio_camb */
   case reio_camb:
   case reio_half_tanh:
+  case reio_mine:
     /* Read */
     class_call(parser_read_double(pfc,"z_reio",&param1,&flag1,errmsg),
                errmsg,

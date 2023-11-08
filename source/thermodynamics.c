@@ -4119,6 +4119,27 @@ int thermodynamics_reionization_function(
 
     /** - implementation of ionization function similar to the one in CAMB */
   //TODO: 实际上x_e在这里定义
+  case reio_mine://直接搞一条直线拉倒了
+    /** - --> case z > z_reio_start */
+    if (z > preio->reionization_parameters[preio->index_re_reio_start]) {
+      *x = preio->reionization_parameters[preio->index_re_xe_before];
+    }
+    else{
+      argument = (pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
+                      preio->reionization_parameters[preio->index_re_reio_exponent])
+                  -pow((1.+z),preio->reionization_parameters[preio->index_re_reio_exponent]))
+        /(preio->reionization_parameters[preio->index_re_reio_exponent]
+          *pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
+               (preio->reionization_parameters[preio->index_re_reio_exponent]-1.)))
+        /preio->reionization_parameters[preio->index_re_reio_width];
+
+      *x = (preio->reionization_parameters[preio->index_re_xe_after]
+            -preio->reionization_parameters[preio->index_re_xe_before])
+        *(1-exp(-argument))
+        +preio->reionization_parameters[preio->index_re_xe_before];
+    }
+  break;
+
   case reio_camb:
 
     /** - --> case z > z_reio_start */

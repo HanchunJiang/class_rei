@@ -2159,6 +2159,9 @@ int input_read_parameters_general(struct file_content * pfc,
     else if (strcmp(string1,"reio_inter") == 0){
       pth->reio_parametrization = reio_inter;
     }
+    else if (strcmp(string1,"reio_mine") == 0){
+      pth->reio_parametrization = reio_mine;
+    }
     else{
       class_stop(errmsg,
                  "You specified 'reio_parametrization' as '%s'. It has to be one of {'reio_none','reio_camb','reio_bins_tanh','reio_half_tanh','reio_many_tanh','reio_inter'}.",string1);

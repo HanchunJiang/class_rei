@@ -983,6 +983,7 @@ int thermodynamics_indices(
     /* case where x_e(z) taken like in CAMB (other cases can be added) */
   case reio_camb:
   case reio_half_tanh:
+  case reio_mine:
     class_define_index(ptrp->index_re_reio_redshift,_TRUE_,index_re,1);
     class_define_index(ptrp->index_re_reio_exponent,_TRUE_,index_re,1);
     class_define_index(ptrp->index_re_reio_width,_TRUE_,index_re,1);
@@ -1149,6 +1150,7 @@ int thermodynamics_set_parameters_reionization(
     /** - (b) if reionization implemented like in CAMB, or half tanh like in  1209.0247 */
   case reio_camb:
   case reio_half_tanh:
+  case reio_mine:
 
     /** - --> set values of these parameters, excepted those depending on the reionization redshift */
 
@@ -1158,6 +1160,11 @@ int thermodynamics_set_parameters_reionization(
       preio->reionization_parameters[preio->index_re_xe_after] = 1. + pth->YHe/(_not4_*(1.-pth->YHe));
     }
     if (pth->reio_parametrization == reio_half_tanh) {
+      /* xe_after_reio: neglect He ionization */
+      preio->reionization_parameters[preio->index_re_xe_after] = 1.;
+      //+ 2*pth->YHe/(_not4_*(1.-pth->YHe));    /* xe_after_reio: H + fully ionized He */
+    }
+    if (pth->reio_parametrization == reio_mine) {
       /* xe_after_reio: neglect He ionization */
       preio->reionization_parameters[preio->index_re_xe_after] = 1.;
       //+ 2*pth->YHe/(_not4_*(1.-pth->YHe));    /* xe_after_reio: H + fully ionized He */

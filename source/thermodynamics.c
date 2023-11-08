@@ -972,6 +972,7 @@ int thermodynamics_indices(
 
   class_define_index(ptrp->index_re_reio_start,_TRUE_,index_re,1);
 
+//TODO: 初始化ptrp中的index
   switch (pth->reio_parametrization) {
 
     /* case with no reionization requested */
@@ -1151,6 +1152,7 @@ int thermodynamics_set_parameters_reionization(
 
     /** - --> set values of these parameters, excepted those depending on the reionization redshift */
 
+    //TODO: 使用一个函数通关的情况下要加上reionization结束的值
     if (pth->reio_parametrization == reio_camb) {
       /* xe_after_reio: H + singly ionized He (checked before that denominator is non-zero) */
       preio->reionization_parameters[preio->index_re_xe_after] = 1. + pth->YHe/(_not4_*(1.-pth->YHe));
@@ -1179,6 +1181,7 @@ int thermodynamics_set_parameters_reionization(
                pth->error_message,
                "stop to avoid division by zero");
 
+    //TODO: 输入是redshift的时候
     /** - --> if reionization redshift given as an input, initialize the remaining values*/
 
     if (pth->reio_z_or_tau == reio_z) {
@@ -1770,6 +1773,7 @@ int thermodynamics_output_summary(
     printf(" -> no reionization requested, optical depth = %f\n",pth->tau_reio);
     break;
 
+  //TODO: 输出信息
   case reio_camb:
   case reio_half_tanh:
     switch (pth->reio_z_or_tau) {

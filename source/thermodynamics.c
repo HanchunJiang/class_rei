@@ -227,9 +227,9 @@ int thermodynamics_at_z(
   /** - interpolate in table with array_interpolate_spline (normal mode) or array_interpolate_spline_growing_closeby (closeby mode) */
 
   else {
-
+      //TODO: half_tanh在这里有判定
     /* some very specific cases require linear interpolation because of a break in the derivative of the functions */
-    if (((pth->reio_parametrization == reio_half_tanh) && (z < 2*pth->z_reio))
+    if (((pth->reio_parametrization == reio_half_tanh ||pth->reio_parametrization == reio_mine) && (z < 2*pth->z_reio))
         || ((pth->reio_parametrization == reio_inter) && (z < 50.))) {
 
       class_call(array_interpolate_linear(pth->z_table,
@@ -2234,6 +2234,9 @@ int thermodynamics_reionization_evolve_with_tau(
   /* maximum possible starting redshift */
   switch (pth->reio_parametrization) {
   //TODO: 只有camb和half_tanh有tau，所以自定义的函数能不能输入tau还是个问题
+  case reio_mine:
+    ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_sup;
+    break;
   case reio_camb:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_z_start_max;
     break;
@@ -2297,12 +2300,14 @@ int thermodynamics_reionization_evolve_with_tau(
   /* minimum possible reionization redshift */
   ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_redshift] = z_inf;
   /* minimum possible starting redshift */
+  //TODO: 先照抄half_tanh的判定
   switch (pth->reio_parametrization) {
   case reio_camb:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_start_factor*pth->reionization_width;
     if (ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] < pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width) {
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width;
     }
+  case reio_mine:
   case reio_half_tanh:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_inf;
     break;
@@ -2373,6 +2378,8 @@ int thermodynamics_reionization_evolve_with_tau(
         ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width;
       }
       break;
+    //TODO: 先照抄half_tanh的判定
+    case reio_mine:
     case reio_half_tanh:
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_mid;
       break;
@@ -4119,12 +4126,13 @@ int thermodynamics_reionization_function(
 
     /** - implementation of ionization function similar to the one in CAMB */
   //TODO: 实际上x_e在这里定义
-  case reio_mine://直接搞一条直线拉倒了
+  case reio_mine://直接搞一条直线了
     /** - --> case z > z_reio_start */
     if (z > preio->reionization_parameters[preio->index_re_reio_start]) {
       *x = preio->reionization_parameters[preio->index_re_xe_before];
     }
-    else{
+    else {
+      /** - --> case z < z_reio_start: hydrogen contribution (tanh of complicated argument) */
       argument = (pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
                       preio->reionization_parameters[preio->index_re_reio_exponent])
                   -pow((1.+z),preio->reionization_parameters[preio->index_re_reio_exponent]))
@@ -4133,9 +4141,13 @@ int thermodynamics_reionization_function(
                (preio->reionization_parameters[preio->index_re_reio_exponent]-1.)))
         /preio->reionization_parameters[preio->index_re_reio_width];
 
+      /* argument goes from 0 to infty, not from -infty to infty like
+         in reio_camb case. Thus tanh(argument) goes from 0 to 1, not
+         from -1 to 1.  */
+
       *x = (preio->reionization_parameters[preio->index_re_xe_after]
             -preio->reionization_parameters[preio->index_re_xe_before])
-        *(1-exp(-argument))
+        *(1-exp(-z))
         +preio->reionization_parameters[preio->index_re_xe_before];
     }
   break;

@@ -4147,7 +4147,7 @@ int thermodynamics_reionization_function(
 
       *x = (preio->reionization_parameters[preio->index_re_xe_after]
             -preio->reionization_parameters[preio->index_re_xe_before])
-        *(1-exp(-z))
+        *(1-exp(-argument))
         +preio->reionization_parameters[preio->index_re_xe_before];
     }
   break;

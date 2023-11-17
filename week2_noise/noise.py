@@ -19,4 +19,5 @@ for i in np.arange(2,802,1):
     for j in range(len(sigma_nu)):
         sum+=1.0/((sigma_nu[j]/Tcmb)**2*np.exp(i*(i+1)*theta_nu[j]/8/np.log(2)))
     spectrum[i-2]=1.0/sum
-np.save("spectrum.npy",spectrum)
+
+np.save("week2_noise/spectrum.npy",spectrum)

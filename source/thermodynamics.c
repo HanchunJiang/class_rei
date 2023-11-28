@@ -4131,6 +4131,9 @@ int thermodynamics_reionization_function(
     if (z > preio->reionization_parameters[preio->index_re_reio_start]) {
       *x = preio->reionization_parameters[preio->index_re_xe_before];
     }
+    else if (z<5){
+      *x = preio->reionization_parameters[preio->index_re_xe_after];
+    }
     else {
       /** - --> case z < z_reio_start: hydrogen contribution (tanh of complicated argument) */
       argument = (pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
@@ -4141,13 +4144,14 @@ int thermodynamics_reionization_function(
                (preio->reionization_parameters[preio->index_re_reio_exponent]-1.)))
         /preio->reionization_parameters[preio->index_re_reio_width];
 
+      argument = z-5;
       /* argument goes from 0 to infty, not from -infty to infty like
          in reio_camb case. Thus tanh(argument) goes from 0 to 1, not
          from -1 to 1.  */
 
       *x = (preio->reionization_parameters[preio->index_re_xe_after]
             -preio->reionization_parameters[preio->index_re_xe_before])
-        *(1-exp(-argument))
+        *exp(-2*argument)
         +preio->reionization_parameters[preio->index_re_xe_before];
     }
   break;

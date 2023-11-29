@@ -1,14 +1,24 @@
 import os
 import numpy as np
+#=====input=======
+z_start=input("z_start")
+z_end=input("z_end")
+z_step=input("z_step")
+r_start=input("r_start")
+r_end=input("r_end")
+r_step=input("r_step")
 
-#content=['output=pCl\n','modes=s,t\n','ic=ad\n','r=0.1\n','omega_b=0.030\n','z_reio=']
-content=['output=pCl\n','modes=s,t\n','reio_parametrization=reio_mine\n']
+content=['output=tCl,pCl\n','modes=s,t\n','reio_parametrization=reio_mine\n']
 
-for z_reio in np.arange(5,31,1):
-    for r in np.arange(0.05,0.8,0.05):
-        with open('chi'+str(z_reio)+'.ini','w') as f:
+j=-1
+for z_reio in np.arange(float(z_start),float(z_end),float(z_step)):
+    j+=1
+    for r in np.arange(float(r_start),float(r_end),float(r_step)):
+        with open('chi_'+str(j)+'_.ini','w') as f:
             for i in range(len(content)):
                 f.write(content[i])
             f.write('r='+str(round(r,3))+'\n')
-            f.write('z_reio='+str(z_reio)+'\n')
-        os.system('./class chi'+str(z_reio)+'.ini')
+            f.write('z_reio='+str(round(z_reio,3))+'\n')
+        os.system('./class chi_'+str(j)+'_.ini')
+
+os.system("rm -rf chi*.ini")

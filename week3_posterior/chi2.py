@@ -55,7 +55,8 @@ for i in np.arange(2,2002,1):
 data_fid=np.loadtxt('output/reio_camb04_cl.dat')
 EE_fid=data_fid[0:2000,2]
 BB_fid=data_fid[0:2000,4]
-
+errors_EE=error(EE_fid,spectrum)
+errors_BB=error(BB_fid,spectrum)
 j=-1
 for z_reio in np.arange(z_start,z_end,z_step):
     j+=1
@@ -66,9 +67,9 @@ for z_reio in np.arange(z_start,z_end,z_step):
             data=np.loadtxt('output/chi_'+str(j)+'_'+str(i)+'_cl.dat')
         EEs=data[0:2000,2]
         BBs=data[0:2000,4]
-        errors_EE=error(EEs,spectrum)
+        #errors_EE=error(EEs,spectrum)
         chi2_EE[j,i]=chi2(EE_fid,EEs,errors_EE)
-        errors_BB=error(BBs,spectrum)
+        #errors_BB=error(BBs,spectrum)
         chi2_BB[j,i]=chi2(BB_fid,BBs,errors_BB)
 
 np.save("chi2_EE.npy",chi2_EE)

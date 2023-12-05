@@ -24,3 +24,6 @@
 ## 1205更新：试试加lensing有没有数量级变化
 `reio_camb08`: 1
 `reio_camb09`: lensing fid
+---
+试试算reio_camb的chi2
+* r: 0.01,0.25,0.01

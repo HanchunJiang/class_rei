@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #=========input==============#
-chi2_EE=np.load("chi2_EE.npy")
-chi2_BB=np.load("chi2_BB.npy")
+chi2_EE=np.load("chi21_EE.npy")
+chi2_BB=np.load("chi21_BB.npy")
 
 r_start=0.01
 r_end=0.26
@@ -22,5 +22,5 @@ plt.plot(np.arange(r_start,r_end,r_step),chi2_BB[0])
 plt.show()
 
 #====standard deviation=========#
-print(np.std(posterior(chi2_BB[0])))
+print(np.std(chi2_BB[0]))
 

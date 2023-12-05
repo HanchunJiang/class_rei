@@ -25,7 +25,7 @@ for i in np.arange(2,2001,1):
 
 np.save("spectrum.npy",spectrum)
 
-plt.plot(np.arange(2,2001,1),spectrum[0:1999])
+plt.plot(np.arange(2,1502,1),spectrum[0:1500])
 plt.xlabel("l")
 plt.ylabel("N")
 plt.show()

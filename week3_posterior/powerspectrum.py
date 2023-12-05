@@ -18,7 +18,7 @@ for z_reio in np.arange(float(z_start),float(z_end),float(z_step)):
             for i in range(len(content)):
                 f.write(content[i])
             f.write('r='+str(round(r,3))+'\n')
-            f.write('z_reio='+str(round(z_reio,3))+'\n')
+            f.write('z_reio='+str(round(z_reio,5))+'\n')
         os.system('./class chi_'+str(j)+'_.ini')
 
 os.system("rm -rf chi*.ini")

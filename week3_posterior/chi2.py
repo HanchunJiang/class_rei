@@ -1,13 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
 #======input=========#
+'''
 z_start=float(input("z_start"))
 z_end=float(input("z_end"))
 z_step=float(input("z_step"))
 r_start=float(input("r_start"))
 r_end=float(input("r_end"))
 r_step=float(input("r_step"))
+'''
 
+z_start=7.6711
+z_end=7.6712
+z_step=100
+r_start=0.01
+r_end=0.26
+r_step=0.01
 
 #======parameters=========#
 Tcmb=2.75*10**6

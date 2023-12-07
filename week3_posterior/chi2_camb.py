@@ -13,9 +13,9 @@ r_step=float(input("r_step"))
 z_start=7.6711
 z_end=7.6712
 z_step=100
-r_start=0.01
-r_end=0.26
-r_step=0.01
+r_start=0.07
+r_end=0.1205
+r_step=0.0005
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -60,7 +60,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('output/reio_camb04_cl.dat')
+data_fid=np.loadtxt('output/reio_camb09_cl.dat')
 EE_fid=data_fid[0:2000,2]
 BB_fid=data_fid[0:2000,4]
 errors_EE=error(EE_fid,spectrum)

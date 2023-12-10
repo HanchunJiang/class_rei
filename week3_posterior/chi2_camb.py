@@ -14,8 +14,8 @@ z_start=7.6711
 z_end=7.6712
 z_step=100
 r_start=0.07
-r_end=0.1205
-r_step=0.0005
+r_end=0.13
+r_step=0.000001
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -50,7 +50,7 @@ def chi2(Cl_fid,Cl,sigma):
     return sum
 
 #========result========#
-chi2_EE=np.zeros((len(np.arange(z_start,z_end,z_step)),len(np.arange(r_start,r_end,r_step))))
+#chi2_EE=np.zeros((len(np.arange(z_start,z_end,z_step)),len(np.arange(r_start,r_end,r_step))))
 chi2_BB=np.zeros((len(np.arange(z_start,z_end,z_step)),len(np.arange(r_start,r_end,r_step))))
 
 #====Array=======#
@@ -61,25 +61,25 @@ for i in np.arange(2,2002,1):
 
 #Cl_fid
 data_fid=np.loadtxt('output/reio_camb09_cl.dat')
-EE_fid=data_fid[0:2000,2]
+#EE_fid=data_fid[0:2000,2]
 BB_fid=data_fid[0:2000,4]
-errors_EE=error(EE_fid,spectrum)
+#errors_EE=error(EE_fid,spectrum)
 errors_BB=error(BB_fid,spectrum)
 j=-1
 for z_reio in np.arange(z_start,z_end,z_step):
     j+=1
     for i in range(len(np.arange(r_start,r_end,r_step))):
-        if i<10:
-            data=np.loadtxt('output/chi1_'+str(j)+'_0'+str(i)+'_cl.dat')
+        if (i%100)<10:
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl.dat')
         else:
-            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(i)+'_cl.dat')
-        EEs=data[0:2000,2]
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl.dat')
+        #EEs=data[0:2000,2]
         BBs=data[0:2000,4]
         #errors_EE=error(EEs,spectrum)
-        chi2_EE[j,i]=chi2(EE_fid,EEs,errors_EE)
+        #chi2_EE[j,i]=chi2(EE_fid,EEs,errors_EE)
         #errors_BB=error(BBs,spectrum)
         chi2_BB[j,i]=chi2(BB_fid,BBs,errors_BB)
 
-np.save("chi21_EE.npy",chi2_EE)
+#np.save("chi21_EE.npy",chi2_EE)
 np.save("chi21_BB.npy",chi2_BB)
 

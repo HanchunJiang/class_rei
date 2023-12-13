@@ -1,15 +1,23 @@
 import os
 import numpy as np
 #=====input=======
-p1_start=input("p1_start ")
-p1_end=input("p1_end ")
-p1_step=input("p1_step ")
-p1_name=input("p1_name ")
-p2_start=input("p2_start ")
-p2_end=input("p2_end ")
-p2_step=input("p2_step ")
+p1_start=0.07#input("p1_start ")
+p1_end=0.15#input("p1_end ")
+p1_step=0.01#input("p1_step ")
+p1_name="r"#input("p1_name ")
+p2_start=0.3#input("p2_start ")
+p2_end=0.7#input("p2_end ")
+p2_step=0.01#input("p2_step ")
+p2_name="reionization_width"#input("p2_name ")
 
-content=['output=tCl,pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
+open1=input("any additional condition?")
+open1=bool(int(open1))
+
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
+
+if open1==True:
+    temp=input("content ")
+    content.append(temp+'\n')
 
 j=-1
 for p1 in np.arange(float(p1_start),float(p1_end),float(p1_step)):

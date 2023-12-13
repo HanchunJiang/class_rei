@@ -1,20 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 #======input=========#
-'''
-z_start=float(input("z_start"))
-z_end=float(input("z_end"))
-z_step=float(input("z_step"))
-r_start=float(input("r_start"))
-r_end=float(input("r_end"))
-r_step=float(input("r_step"))
-'''
-z_start=5
-z_end=10
-z_step=0.4
-r_start=0.01
-r_end=0.3
-r_step=0.04
+p1_start=0.07#input("p1_start ")
+p1_end=0.15#input("p1_end ")
+p1_step=0.01#input("p1_step ")
+p1_name="r"#input("p1_name ")
+p2_start=0.3#input("p2_start ")
+p2_end=0.7#input("p2_end ")
+p2_step=0.01#input("p2_step ")
+p2_name="reionization_width"#input("p2_name ")
 
 #=======functions=========#
 def posterior(chi2):
@@ -26,31 +20,14 @@ def posterior(chi2):
     print(post)
     return post
 
-
-
-chi2_EE=np.load("chi2_EE.npy")
-chi2_BB=np.load("chi2_BB.npy")
+chi2_BB=np.load("/home/hcjiang/class/chi21_BB.npy")
 
 fig = plt.figure()
-'''
-ax = fig.add_subplot(projection='3d')
-#ax=fig.add_subplot()
-x=[i for i in np.arange(z_start,z_end,z_step) for j in range(len(np.arange(r_start,r_end,r_step)))]
-y=[j for i in range(len(np.arange(z_start,z_end,z_step))) for j in np.arange(r_start,r_end,r_step)]
-z=[chi2_EE[i,j] for i in range(len(np.arange(z_start,z_end,z_step))) for j in range(len(np.arange(r_start,r_end,r_step)))]
-
-#CS = ax.contourf(X, Y, Z, [4,8],colors=['blue','lightsteelblue','white'])
-ax.scatter(x,y,z)
-ax.set_xlabel("z_reio")
-ax.set_ylabel("r")
-ax.set_zlabel(r"$\chi^2$")
-#ax.contourf(X,Y,posterior(chi2_EE),colors=['blue','lightsteelblue','white'])
-plt.show()
-'''
 ay=fig.add_subplot()
-X,Y = np.meshgrid(np.arange(r_start,r_end,r_step),np.arange(z_start,z_end,z_step))
-contour=ay.contourf(X,Y,posterior(chi2_EE))#,colors=['blue','lightsteelblue','white'])
-ay.set_xlabel("r")
-ay.set_ylabel("z_reio")
+X,Y = np.meshgrid(np.arange(float(p2_start),float(p2_end),float(p2_step)),np.arange(float(p1_start),float(p1_end),float(p1_step)))
+contour=ay.contourf(X,Y,posterior(chi2_BB))#,colors=['blue','lightsteelblue','white'])
+ay.set_xlabel(p2_name)
+ay.set_ylabel(p1_name)
 fig.colorbar(contour)
+plt.savefig("chi2_2D.jpg")
 plt.show()

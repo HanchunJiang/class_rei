@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import leastsq
 
 #=========input==============#
 p_start=float(input("p_start "))
@@ -18,10 +19,19 @@ def posterior(chi2):
     print(post)
     return post
 
-#plt.plot(np.arange(r_start,r_end,r_step),posterior(chi2_BB[0]))
-#plt.show()
+def fit_curve(P,sigma):
+    result=np.zeros(len(P))
+    for i in range(len(P)):
+        result[i]=(P[i]-0.1)**2/sigma**2
+    return result
+    
+def func(r,sigma):
+    return np.exp(-(r-0.1)**2/2/sigma**2)
 
-#==========sigma=============#
+def residuals(p,y,x):
+    return y-func(x,p)
+
+#==========posterior=============#
 post_BB=posterior(chi2_BB[0])
 sum=0
 for i in range(len(post_BB)):
@@ -31,23 +41,29 @@ print(sum)
 N=1/sum
 print(N)
 
-plt.plot(np.arange(p_start,p_end,p_step),N*post_BB)
-plt.xlabel(p_name)
-plt.ylabel("P("+p_name+")")
-plt.savefig(p_name+"_chi2.jpg")
-plt.show()
-plt.cla()
-
+#=========sigma==========#
+sigma0=1e-5
+plsq=leastsq(residuals,sigma0,args=(post_BB,np.arange(p_start,p_end,p_step)))
+print(plsq[0])
 plt.plot(np.arange(p_start,p_end,p_step),chi2_BB[0])
+plt.plot(np.arange(p_start,p_end,p_step),fit_curve(np.arange(p_start,p_end,p_step),plsq[0]))
 plt.xlabel(p_name)
 plt.ylabel(r"$\chi^2$")
 plt.savefig(p_name+"_chi2.jpg")
 plt.show()
+plt.cla()
+
+plt.plot(np.arange(p_start,p_end,p_step),[func(i,plsq[0]) for i in np.arange(p_start,p_end,p_step)])
+plt.plot(np.arange(p_start,p_end,p_step),post_BB)
+plt.xlabel(p_name)
+plt.ylabel("P("+p_name+")")
+plt.savefig(p_name+"_posterior.jpg")
+plt.show()
+'''
 sigma2=0
 R=np.arange(p_start,p_end,p_step)
 for i in range(len(post_BB)):
     sigma2+=p_step*(R[i]-0.1)**2*post_BB[i]*N
-
-print(np.sqrt(sigma2))
+'''
 
 

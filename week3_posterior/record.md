@@ -57,5 +57,9 @@ $x_e(y)=\frac{f}{2}(1+\tanh(\frac{y(z_{re})-y}{\Delta_y}))$
 * input is $\Delta_z$, and $\Delta_y=1.5\sqrt{1+z_{re}}\Delta_z$
 * `reionization_width`就是$\Delta_z$
 
+### 新的参数设置
+* r: 0.09 0.11 0.00001
+* `reionization_width`: 0.3 0.7 0.0001
+
 
 

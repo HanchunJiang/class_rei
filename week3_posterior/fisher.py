@@ -8,36 +8,36 @@ f_sky=1
 delta_l=1
 
 #=========input==============#
-data_lfid=np.loadtxt('output/reio_camb09_cl.dat')
-data_lrp
-data_lrm
-data_lzp
-data_lzm
+data_lfid=np.loadtxt('reio_camb09_cl.dat')
+data_l1p=np.loadtxt('reio_camb00_cl.dat')
+data_l1m=np.loadtxt('reio_camb01_cl.dat')
+data_l2p=np.loadtxt('reio_camb02_cl.dat')
+data_l2m=np.loadtxt('reio_camb03_cl.dat')
 
-delta_z
-delta_r
+delta_1=0.00005
+delta_2=0.00001
 
 #========function==============#
 def Fisher(fid,NN,ip,im,jp,jm,delta_i,delta_j):
     sum=0
     for k in range(len(fid)):
-        sum+=(2*(i+2)+1)/2*f_sky/(fid[k]+NN[k])**2*(ip[k]-im[k])/2/delta_i*(jp[k]-jm[k])/2/delta_j
+        sum+=(2*(k+2)+1)/2*f_sky/(fid[k]+NN[k])**2*(ip[k]-im[k])/2/delta_i*(jp[k]-jm[k])/2/delta_j
     return sum
 
 BB_lfid=data_lfid[0:2000,4]
-BB_lrp=data_lrp[0:2000,4]
-BB_lrm=data_lrm[0:2000,4]
-BB_lzp=data_lzp[0:2000,4]
-BB_lzm=data_lzm[0:2000,4]
+BB_l1p=data_l1p[0:2000,2]
+BB_l1m=data_l1m[0:2000,2]
+BB_l2p=data_l2p[0:2000,2]
+BB_l2m=data_l2m[0:2000,2]
 
 spectrum=np.zeros(2000)
 for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
-F_rr=Fisher(BB_lfid,spectrum,BB_lrp,BB_lrm,BB_lrp,BB_lrm,delta_r,delta_r)
-F_zz=Fisher(BB_lfid,spectrum,BB_lzp,BB_lzm,BB_lzp,BB_lzm,delta_z,delta_z)
-F_rz=Fisher(BB_lfid,spectrum,BB_lrp,BB_lrm,BB_lzp,BB_lzm,delta_r,delta_z)
+F_11=Fisher(BB_lfid,spectrum,BB_l1p,BB_l1m,BB_l1p,BB_l1m,delta_1,delta_1)
+F_22=Fisher(BB_lfid,spectrum,BB_l2p,BB_l2m,BB_l2p,BB_l2m,delta_2,delta_2)
+F_12=Fisher(BB_lfid,spectrum,BB_l1p,BB_l1m,BB_l2p,BB_l2m,delta_1,delta_2)
 
-print(1/np.sqrt(F_rr))
-print(1/np.sqrt(F_zz))
-print(np.sqrt(F_rr*F_zz)/F_rz)
+print(np.sqrt(1/F_11))
+print(np.sqrt(1/F_22))
+print(np.sqrt(F_11*F_22)/F_12)

@@ -3,12 +3,12 @@ import numpy as np
 #=====input=======
 p1_start=0.09#input("p1_start ")
 p1_end=0.11#input("p1_end ")
-p1_step=0.00001#input("p1_step ")
+p1_step=0.00005#input("p1_step ")
 p1_name="r"#input("p1_name ")
-p2_start=0.3#input("p2_start ")
-p2_end=0.7#input("p2_end ")
-p2_step=0.0001#input("p2_step ")
-p2_name="reionization_width"#input("p2_name ")
+p2_start=0.051#input("p2_start ")
+p2_end=0.057#input("p2_end ")
+p2_step=0.00001#input("p2_step ")
+p2_name="tau_reio"#input("p2_name ")
 
 open1=input("any additional condition?")
 open1=bool(int(open1))

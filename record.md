@@ -108,3 +108,6 @@ $x_e(y)=\frac{f}{2}(1+\tanh(\frac{y(z_{re})-y}{\Delta_y}))$
     * r=0.1
     * tau_reio=0.0560
 
+$\sigma_r$:8.64093721e-06
+$\sigma_\tau$:0.0003987 (initial: 1e-3)
+

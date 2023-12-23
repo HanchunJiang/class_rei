@@ -74,14 +74,37 @@ $x_e(y)=\frac{f}{2}(1+\tanh(\frac{y(z_{re})-y}{\Delta_y}))$
     * tau_reio=0.054
 * `l2p`:
     * r=0.1
-    * tau_reio=0.00541
+    * tau_reio=0.0541
 * `l2m`:
     * r=0.1
-    * tau_reio=0.00539
+    * tau_reio=0.0539
 
 * $\sigma_1$=0.00028192588780615843
 * $\sigma_2$=0.00013445473900394967
 * $\sigma_{12}$=-1.0662709406383502
 
+## 1222 meeting 更新:
+* 先算Fisher: +prior
+    * 2D时要乘以1.5
+* Fisher得到$\sigma$
+    * 范围: +/- 5 $\sigma$
+    * 步长: $\sigma$/10
+* 算posterior时加上高斯prior
+    * planck
 
+
+## 1223:
+* fiducial $\tau$改成了0.0561，记得改掉算fisher的值
+* `l1p`:
+    * r=0.10005
+    * tau_reio=0.0561
+* `l1m`:
+    * r=0.09995
+    * tau_reio=0.0561
+* `l2p`:
+    * r=0.1
+    * tau_reio=0.0562
+* `l2m`:
+    * r=0.1
+    * tau_reio=0.0560
 

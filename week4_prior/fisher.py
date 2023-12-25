@@ -36,7 +36,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 F_11=1.5*Fisher(BB_lfid,spectrum,BB_l1p,BB_l1m,BB_l1p,BB_l1m,delta_1,delta_1)
-F_22=1.5*Fisher(BB_lfid,spectrum,BB_l2p,BB_l2m,BB_l2p,BB_l2m,delta_2,delta_2)+1/sigma_tau_planck**2
+F_22=1.5*(Fisher(BB_lfid,spectrum,BB_l2p,BB_l2m,BB_l2p,BB_l2m,delta_2,delta_2)+1/sigma_tau_planck**2)
 F_12=Fisher(BB_lfid,spectrum,BB_l1p,BB_l1m,BB_l2p,BB_l2m,delta_1,delta_2)
 
 print(np.sqrt(1/F_11))

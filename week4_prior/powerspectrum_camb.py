@@ -2,7 +2,7 @@ import os
 import numpy as np
 #=====input=======
 p1_value=0.1
-p1_sigma=0.0002819
+p1_sigma=0.0002303
 p1_name="r"#input("p1_name ")
 p2_value=0.0561
 p2_sigma=0.0001085

@@ -4,7 +4,7 @@ from scipy.optimize import leastsq
 
 #======input=========#
 p1_value=0.1
-p1_sigma=0.0002819
+p1_sigma=0.0002303
 p1_name="r"#input("p1_name ")
 p2_value=0.0561
 p2_sigma=0.0001085
@@ -22,12 +22,6 @@ def posterior(chi2,tau,tau0,sigma_tau):
     print(post)
     return post
 
-def fit_curve(P,sigma,mu):
-    result=np.zeros(len(P))
-    for i in range(len(P)):
-        result[i]=(P[i]-mu)**2/sigma**2
-    return result
-    
 def func(r,sigma,mu):
     return np.exp(-(r-mu)**2/2/sigma**2)
 
@@ -42,24 +36,25 @@ post_p2=np.zeros(post.shape[1])
 
 for i in range(post.shape[0]):
     for j in range(post.shape[1]):
-        post_p1[i]+=post[i,j]*0.00005
+        post_p1[i]+=post[i,j]*p1_sigma/10
 
 for i in range(post.shape[1]):
     for j in range(post.shape[0]):
-        post_p2[i]+=post[j,i]*0.00001
+        post_p2[i]+=post[j,i]*p2_sigma/10
 
-sigma0=1e-5
+sigma0=1e-4
 plsq=leastsq(residuals,sigma0,args=(post_p1,np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)),0.1))
 print(plsq[0])
 plt.plot(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)),post_p1)
+plt.plot(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)),[func(i,plsq[0],0.1) for i in np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))])
 plt.xlabel(p1_name)
 plt.ylabel("P("+p1_name+")")
 plt.savefig(p1_name+"2D_posterior.jpg")
 plt.show()
 plt.cla()
 
-sigma0=1e-3
-plsq=leastsq(residuals,sigma0,args=(post_p2,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.054))
+sigma0=1e-4
+plsq=leastsq(residuals,sigma0,args=(post_p2,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.0561))
 print(plsq[0])
 plt.plot(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),post_p2)
 plt.xlabel(p2_name)

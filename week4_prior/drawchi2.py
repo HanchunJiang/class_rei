@@ -18,12 +18,12 @@ def posterior(chi2,tau,tau0,sigma_tau):
     print(post)
     return post
 
-chi2_BB=np.load("/home/hcjiang/class/chi21_BB_prior.npy")
+chi2_BB=np.load("/home/hcjiang/class/chi21_BB_Wishert.npy")
 
 fig = plt.figure()
 ay=fig.add_subplot()
 X,Y = np.meshgrid(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)))
-contour=ay.contourf(X,Y,posterior(chi2_BB,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.0561,0.0071))#,colors=['blue','lightsteelblue','white'])
+contour=ay.contourf(X,Y,posterior(chi2_BB,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.0561,1e-4))#,colors=['blue','lightsteelblue','white'])
 ay.set_xlabel(p2_name)
 ay.set_ylabel(p1_name)
 fig.colorbar(contour)

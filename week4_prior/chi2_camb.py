@@ -25,7 +25,7 @@ def error(PS,NN):
     return errors
 
 #chi2
-def chi2(Cl_fid,Cl,sigma):
+def chi2_Gauss(Cl_fid,Cl,sigma):
     '''
     Cl_fid: ground truth
     Cl: PS we want to calculate chi2
@@ -37,6 +37,14 @@ def chi2(Cl_fid,Cl,sigma):
         #print(sum)
     print(sum)
     return sum
+
+def chi2(Cl_fid,Cl,NN):
+    sum=0
+    for i in range(min(len(Cl),len(NN))):
+        sum+=(2*(i+2)+1)*((Cl_fid[i]+NN[i])/(Cl[i]+NN[i])+np.log(Cl[i]+NN[i])-(2*(i+2)-1)/(2*(i+2)+1)*np.log(Cl_fid[i]+NN[i]))
+    print(sum)
+    return sum
+
 
 #========result========#
 chi2_BB=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
@@ -62,7 +70,11 @@ for p1 in np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(
         else:
             data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl.dat')
         BBs=data[0:2000,2]
-        chi2_BB[j,i]=chi2(BB_fid,BBs,errors_BB)
+        chi2_BB[j,i]=chi2(BB_fid,BBs,spectrum)#errors_BB)
 
-np.save("chi21_BB_prior.npy",chi2_BB)
+max_chi=np.max(chi2_BB)
+for i in range(chi2_BB.shape[0]):
+    for j in range(chi2_BB.shape[1]):
+        chi2_BB[i,j]=chi2_BB[i,j]-max_chi
+np.save("chi21_BB_Wishert.npy",chi2_BB)
 

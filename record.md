@@ -108,6 +108,13 @@ $x_e(y)=\frac{f}{2}(1+\tanh(\frac{y(z_{re})-y}{\Delta_y}))$
     * r=0.1
     * tau_reio=0.0560
 
-$\sigma_r$:8.64093721e-06
-$\sigma_\tau$:0.0003987 (initial: 1e-3)
+## 1228:
+* 只constrain r，加EE
+* Fisher要更新C_l
+* 需要带tCl
+    * `00`: r=0.1
+    * `01`: r=0.10005
+    * `02`: r=0.09995
+
+* Fisher: 0.00028208515761258944
 

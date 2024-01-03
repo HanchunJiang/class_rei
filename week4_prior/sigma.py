@@ -4,13 +4,13 @@ from scipy.optimize import leastsq
 
 #======input=========#
 p1_value=0.1
-p1_sigma=0.0002303
+p1_sigma=0.001106
 p1_name="r"#input("p1_name ")
 p2_value=0.0561
-p2_sigma=0.0001085
+p2_sigma=8.093e-5
 p2_name="tau_reio"#input("p2_name ")
 
-chi2_BB=np.load("/home/hcjiang/class/chi21_BB_Wishert.npy")
+chi2_BB=np.load("chi21_BB_Wishert.npy")
 
 #=====function==========#
 def posterior(chi2,tau,tau0,sigma_tau):
@@ -30,7 +30,7 @@ def func(r,p,mu):
 def residuals(p,y,x,mu):
     return y-func(x,p,mu)
 
-post=posterior(chi2_BB,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.0561,0.0071)
+post=posterior(chi2_BB,np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)),0.0561,1e-4)
 #print(post.shape[0])
 #print(post.shape[1])
 post_p1=np.zeros(post.shape[0])

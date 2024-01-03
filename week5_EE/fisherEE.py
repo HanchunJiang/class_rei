@@ -8,36 +8,52 @@ f_sky=1
 delta_l=1
 
 #=========input==============#
-#data_fid=np.loadtxt('output/reio_camb04_cl.dat')
-#data_p=np.loadtxt('output/reio_camb05_cl.dat')
-#data_m=np.loadtxt('output/reio_camb06_cl.dat')
-#data1=np.loadtxt('output/reio_camb07_cl.dat')
-data_lp=np.loadtxt('reio_camb01_cl.dat')
-data_lm=np.loadtxt('reio_camb02_cl.dat')
-data_lfid=np.loadtxt('reio_camb00_cl.dat')
+data_lfid=np.loadtxt('reio_camb00_cl_lensed.dat')
+data_l1p=np.loadtxt('reio_camb01_cl_lensed.dat')
+data_l1m=np.loadtxt('reio_camb02_cl_lensed.dat')
+data_l2p=np.loadtxt('reio_camb03_cl_lensed.dat')
+data_l2m=np.loadtxt('reio_camb04_cl_lensed.dat')
 
-BB_lp=data_lp[0:2000,2]
-BB_lm=data_lm[0:2000,2]
+delta_1=0.00005
+delta_2=0.0001
+
+p1_value=0.1
+p2_value=0.0561
+
+p1_name="r"
+p2_name="tau"
+
+#========function==============#
+def Fisher(EE_fid,BB_fid,NN,EE_ip,EE_im,BB_ip,BB_im,EE_jp,EE_jm,BB_jp,BB_jm,delta_i,delta_j):
+    sum=0
+    for i in range(len(EE_fid)):
+        C=np.array([[BB_lfid[i]+spectrum[i],0],[0,EE_lfid[i]+spectrum[i]]])
+        C_prime_i=(np.array([[BB_ip[i],0],[0,EE_ip[i]]])-np.array([[BB_im[i],0],[0,EE_im[i]]]))/2/delta_i
+        C_prime_j=(np.array([[BB_jp[i],0],[0,EE_jp[i]]])-np.array([[BB_jm[i],0],[0,EE_jm[i]]]))/2/delta_j
+        matrix=np.linalg.inv(C)*C_prime_i*np.linalg.inv(C)*C_prime_j
+        sum+=(2*(i+2)+1)/2*f_sky*matrix.trace()
+    return sum
+
 BB_lfid=data_lfid[0:2000,2]
+BB_l1p=data_l1p[0:2000,2]
+BB_l1m=data_l1m[0:2000,2]
+BB_l2p=data_l2p[0:2000,2]
+BB_l2m=data_l2m[0:2000,2]
 
-EE_lp=data_lp[0:2000,1]
-EE_lm=data_lm[0:2000,1]
 EE_lfid=data_lfid[0:2000,1]
+EE_l1p=data_l1p[0:2000,1]
+EE_l1m=data_l1m[0:2000,1]
+EE_l2p=data_l2p[0:2000,1]
+EE_l2m=data_l2m[0:2000,1]
 
 spectrum=np.zeros(2000)
 for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
-F=0
-for i in range(2000):
-    #if (BB_fid[i]+spectrum[i])!=0:
-    C=np.array([[BB_lfid[i]+spectrum[i],0],[0,EE_lfid[i]+spectrum[i]]])
-    C_prime=(np.array([[BB_lp[i],0],[0,EE_lp[i]]])-np.array([[BB_lm[i],0],[0,EE_lm[i]]]))/2/0.00005
+#Fisher(EE_fid,BB_fid,NN,EE_ip,EE_im,BB_ip,BB_im,EE_jp,EE_jm,BB_jp,BB_jm,delta_i,delta_j)
+F_11=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l1p,EE_l1m,BB_l1p,BB_l1m,EE_l1p,EE_l1m,BB_l1p,BB_l1m,delta_1,delta_1)
+F_22=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l2p,EE_l2m,BB_l2p,BB_l2m,EE_l2p,EE_l2m,BB_l2p,BB_l2m,delta_2,delta_2)
+F_12=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l1p,EE_l1m,BB_l1p,BB_l1m,EE_l2p,EE_l1m,BB_l2p,BB_l2m,delta_1,delta_2)
 
-    matrix=np.linalg.inv(C)*C_prime*np.linalg.inv(C)*C_prime
-    #print(matrix)
-    F+=(2*(i+2)+1)/2*f_sky*matrix.trace()
-    #F+=(2*(i+2)+1)/2*f_sky*1/(BB_fid[i]+spectrum[i])**2*(BB1[i]+spectrum[i])**2
-    #F+=(2*(i+2)+1)/2*f_sky*1/(BB_lfid[i]+spectrum[i])**2*(BB_l1[i]+spectrum[i])**2
-
-print(np.sqrt(1/F))
+print(1/np.sqrt(F_11))
+print(1/np.sqrt(F_22))

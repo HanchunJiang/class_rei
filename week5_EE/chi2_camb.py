@@ -2,8 +2,11 @@ import numpy as np
 
 #======input=========#
 p1_value=0.1
-p1_sigma=0.0002821
+p1_sigma=0.001104
 p1_name="r"#input("p1_name ")
+p2_value=0.0561
+p2_sigma=0.0003845
+p2_name="tau_reio"#input("p2_name ")
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -46,8 +49,8 @@ def chi2(Cl_fid,Cl,NN):
 #========result========#
 #chi2_BB=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
 #chi2_EE=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
-#chi2_total=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
-chi2_total=np.zeros(len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))))
+chi2_total=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
+#chi2_total=np.zeros(len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))))
 
 #====Array=======#
 #noise ps
@@ -56,7 +59,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('reio_camb00_cl.dat')
+data_fid=np.loadtxt('reio_camb00_cl_lensed.dat')
 BB_fid=data_fid[0:2000,2]
 EE_fid=data_fid[0:2000,1]
 #errors_BB=error(BB_fid,spectrum)
@@ -64,22 +67,27 @@ EE_fid=data_fid[0:2000,1]
 j=-1
 for p1 in np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)):
     j+=1
-    if (j%100)<10:
-        data=np.loadtxt('output/'+p1_name+'1_0_'+str(int(j/100))+'_0'+str(j%100)+'_cl.dat')
-    else:
-        data=np.loadtxt('output/'+p1_name+'1_0_'+str(int(j/100))+'_'+str(j%100)+'_cl.dat')
-    BBs=data[0:2000,2]
-    EEs=data[0:2000,1]
+    for i in range(len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))):
+        if (i%100)<10:
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
+        else:
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl_lensed.dat')
+        BBs=data[0:2000,2]
+        #print(BBs)
+        EEs=data[0:2000,1]
+        #print(EEs)
 
-    #chi2_BB[j,i]
-    chi2_BB=chi2(BB_fid,BBs,spectrum)#errors_BB)
-    chi2_EE=chi2(EE_fid,EEs,spectrum)
-    chi2_total[j]=chi2_BB+chi2_EE
-
-max_chi=np.max(chi2_total)
-for i in range(len(chi2_total)):
-    chi2_total[i]=chi2_total[i]-max_chi
+        #chi2_BB[j,i]
+        chi2_BB=chi2(BB_fid,BBs,spectrum)#errors_BB)
+        chi2_EE=chi2(EE_fid,EEs,spectrum)
+        chi2_total[j,i]=chi2_BB+chi2_EE
 
 print(chi2_total)
-np.save("chi21_total_Wishert_1d.npy",chi2_total)
+max_chi=np.max(chi2_total)
+print(max_chi)
+for i in range(chi2_total.shape[0]):
+    for j in range(chi2_total.shape[1]):
+        chi2_total[i,j]=chi2_total[i,j]-max_chi
 
+np.save("chi21_Wishert.npy",chi2_total)
+print(chi2_total)

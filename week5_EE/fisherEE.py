@@ -14,10 +14,10 @@ data_l1m=np.loadtxt('reio_camb02_cl_lensed.dat')
 data_l2p=np.loadtxt('reio_camb03_cl_lensed.dat')
 data_l2m=np.loadtxt('reio_camb04_cl_lensed.dat')
 
-delta_1=0.00005
+delta_1=0.000005
 delta_2=0.0001
 
-p1_value=0.1
+p1_value=0.001
 p2_value=0.0561
 
 p1_name="r"

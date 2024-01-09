@@ -57,6 +57,7 @@ with open('result.txt','w') as f:
     f.write(str(res)+'\n')
     f.write("===Fisher Finish===\n")
 
+print("======Fisher Finish======")
 #==========Power Spectrum=======
 p1_sigma=float(res[0])
 p2_sigma=float(res[1])
@@ -68,5 +69,16 @@ for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,
 f = os.popen(os_str, 'r')
 f.close()
 
-#=========
+print("======PS Finish======")
+
+#=========chi2========
+os_str = 'python3 week6_three/chi2_camb.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges]:
+    os_str += str(i)+' '
+f = os.popen(os_str, 'r')
+res = f.readlines()
+print(res)
+f.close()
+print("======chi2 Finish======")
+
 

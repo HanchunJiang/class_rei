@@ -1,15 +1,23 @@
 import numpy as np
+import sys
 
-#======input=========#
-p1_value=0.001
-p1_sigma=0.0001806
-p1_name="r"#input("p1_name ")
-p2_value=0.5
-p2_sigma=0.1316
-p2_name="reionization_width"#input("p2_name ")
-p3_value=0.0561
-p3_sigma=0.0003851
-p3_name="tau_reio"#input("p3_name ")
+#=====input=======
+try:
+    p1_value=float(sys.argv[1])
+    p1_sigma=float(sys.argv[2])
+    p1_name=sys.argv[3]
+    p2_value=float(sys.argv[4])
+    p2_sigma=float(sys.argv[5])
+    p2_name=sys.argv[6]
+    p3_value=float(sys.argv[7])
+    p3_sigma=float(sys.argv[8])
+    p3_name=sys.argv[9]
+    steps=float(sys.argv[10])
+    ranges=float(sys.argv[11])
+
+except Exception as e:
+    print("Input Error:", e)
+
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -38,21 +46,21 @@ def chi2_Gauss(Cl_fid,Cl,sigma):
     for i in range(min(len(Cl),len(sigma))):
         sum+=(Cl_fid[i]-Cl[i])**2/sigma[i]**2
         #print(sum)
-    print(sum)
+    #print(sum)
     return sum
 
 def chi2(Cl_fid,Cl,NN):
     sum=0
     for i in range(min(len(Cl),len(NN))):
         sum+=(2*(i+2)+1)*((Cl_fid[i]+NN[i])/(Cl[i]+NN[i])+np.log(Cl[i]+NN[i])-(2*(i+2)-1)/(2*(i+2)+1)*np.log(Cl_fid[i]+NN[i]))
-    print(sum)
+    #print(sum)
     return sum
 
 
 #========result========#
 #chi2_BB=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
 #chi2_EE=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
-chi2_total=np.zeros((len(np.arange(float(p1_value-3*p1_sigma),float(p1_value+3*p1_sigma),float(p1_sigma/4.0))),len(np.arange(float(p2_value-3*p2_sigma),float(p2_value+3*p2_sigma),float(p2_sigma/4.0))),len(np.arange(float(p3_value-3*p3_sigma),float(p3_value+3*p3_sigma),float(p3_sigma/4.0)))))
+chi2_total=np.zeros((len(np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps))),len(np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps))),len(np.arange(float(p3_value-ranges*p3_sigma),float(p3_value+ranges*p3_sigma),float(p3_sigma/steps)))))
 #chi2_total=np.zeros((len(np.arange(float(p1_value-2*p1_sigma),float(p1_value+2*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-2*p2_sigma),float(p2_value+2*p2_sigma),float(p2_sigma/10.0)))))
 #chi2_total=np.zeros(len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))))
 
@@ -69,12 +77,12 @@ EE_fid=data_fid[0:2000,1]
 #errors_BB=error(BB_fid,spectrum)
 
 k=-1
-for p1 in np.arange(float(p1_value-3*p1_sigma),float(p1_value+3*p1_sigma),float(p1_sigma/4.0)):
+for p1 in np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps)):
     k+=1
     j=-1
-    for p2 in np.arange(float(p2_value-3*p2_sigma),float(p2_value+3*p2_sigma),float(p2_sigma/4.0)):
+    for p2 in np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)):
         j+=1
-        for i in range(len(np.arange(float(p3_value-3*p3_sigma),float(p3_value+3*p3_sigma),float(p3_sigma/4.0)))):
+        for i in range(len(np.arange(float(p3_value-ranges*p3_sigma),float(p3_value+ranges*p3_sigma),float(p3_sigma/steps)))):
             if (i%100)<10:
                 data=np.loadtxt('output/chi1_'+str(k)+'_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
             else:
@@ -89,9 +97,9 @@ for p1 in np.arange(float(p1_value-3*p1_sigma),float(p1_value+3*p1_sigma),float(
             chi2_EE=chi2(EE_fid,EEs,spectrum)
             chi2_total[k,j,i]=chi2_BB+chi2_EE
 
-print(chi2_total)
+#print(chi2_total)
 max_chi=np.max(chi2_total)
-print(max_chi)
+#print(max_chi)
 for i in range(chi2_total.shape[0]):
     for j in range(chi2_total.shape[1]):
         for k in range(chi2_total.shape[2]):

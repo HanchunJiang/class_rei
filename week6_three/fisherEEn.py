@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -13,8 +14,11 @@ data_lfid=np.loadtxt('reio_camb00_cl_lensed.dat')
 data_lp=[np.loadtxt('reio_camb01_cl_lensed.dat'),np.loadtxt('reio_camb03_cl_lensed.dat'),np.loadtxt('reio_camb05_cl_lensed.dat')]
 data_lm=[np.loadtxt('reio_camb02_cl_lensed.dat'),np.loadtxt('reio_camb04_cl_lensed.dat'),np.loadtxt('reio_camb06_cl_lensed.dat')]
 
-p_value=[0.001,0.0561,0.5]
-delta=[0.000005,0.0001,0.0005]
+try:
+    p_value=[float(sys.argv[1]),float(sys.argv[2]),float(sys.argv[3])]
+    delta=[float(sys.argv[4]),float(sys.argv[5]),float(sys.argv[6])]
+except Exception as e:
+    print("Input Error:", e)
 
 p_name=["r","tau","width"]
 
@@ -44,4 +48,5 @@ for i in range(len(delta)):
     BB_lm=data_lm[i][0:2000,2]
     F_ii.append(1/np.sqrt(1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_lp,EE_lm,BB_lp,BB_lm,EE_lp,EE_lm,BB_lp,BB_lm,delta[i],delta[i])))
 
-print(F_ii)
+for i in range(len(F_ii)):
+    print(F_ii[i])

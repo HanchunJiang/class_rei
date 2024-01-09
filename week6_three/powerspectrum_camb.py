@@ -1,19 +1,22 @@
 import os
 import numpy as np
+import sys
 #=====input=======
-p1_value=0.001
-p1_sigma=0.0001806
-p1_name="r"#input("p1_name ")
-p2_value=0.5
-p2_sigma=0.1316
-p2_name="reionization_width"#input("p2_name ")
-p3_value=0.0561
-p3_sigma=0.0003851
-p3_name="tau_reio"#input("p3_name ")
-
-
-open1=input("any additional condition?")
-open1=bool(int(open1))
+try:
+    p1_value=float(sys.argv[1])
+    p1_sigma=float(sys.argv[2])
+    p1_name=sys.argv[3]
+    p2_value=float(sys.argv[4])
+    p2_sigma=float(sys.argv[5])
+    p2_name=sys.argv[6]
+    p3_value=float(sys.argv[7])
+    p3_sigma=float(sys.argv[8])
+    p3_name=sys.argv[9]
+    steps=float(sys.argv[10])
+    ranges=float(sys.argv[11])
+    open1=bool(int(sys.argv[12]))
+except Exception as e:
+    print("Input Error:", e)
 
 content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
 
@@ -22,13 +25,13 @@ if open1==True:
     content.append(temp+'\n')
 
 k=-1
-for p1 in np.arange(float(p1_value-3*p1_sigma),float(p1_value+3*p1_sigma),float(p1_sigma/4.0)):
+for p1 in np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps)):
     k+=1
     j=-1
-    for p2 in np.arange(float(p2_value-3*p2_sigma),float(p2_value+3*p2_sigma),float(p2_sigma/4.0)):
+    for p2 in np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)):
         j+=1
         p=0
-        for p3 in np.arange(float(p3_value-3*p3_sigma),float(p3_value+3*p3_sigma),float(p3_sigma/4.0)):
+        for p3 in np.arange(float(p3_value-ranges*p3_sigma),float(p3_value+ranges*p3_sigma),float(p3_sigma/steps)):
             with open('chi1_'+str(k)+'_'+str(j)+'_'+str(int(p/100))+'_.ini','w') as f:
                 for i in range(len(content)):
                     f.write(content[i])

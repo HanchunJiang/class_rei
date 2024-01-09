@@ -9,12 +9,14 @@ p2_name="reionization_width"
 p3_value=0.0561
 p3_name="tau_reio"
 
-steps=4 #sigma/step
-ranges=3 #range*step
+steps=1 #sigma/step
+ranges=2 #range*step
 
 delta1=0.000005
 delta2=0.0001
 delta3=0.0005
+
+open1=0#additional condition for powerspectrum
 
 #======power spectrum for fisher==========
 content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
@@ -55,7 +57,16 @@ with open('result.txt','w') as f:
     f.write(str(res)+'\n')
     f.write("===Fisher Finish===\n")
 
-p1_sigma=res[0]
-p2_sigma=res[1]
-p3_sigma=res[2]
+#==========Power Spectrum=======
+p1_sigma=float(res[0])
+p2_sigma=float(res[1])
+p3_sigma=float(res[2])
+
+os_str = 'python3 week6_three/powerspectrum_camb.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges,open1]:
+    os_str += str(i)+' '
+f = os.popen(os_str, 'r')
+f.close()
+
+#=========
 

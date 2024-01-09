@@ -5,7 +5,7 @@ import numpy as np
 p1_value=0.001
 p1_name="r"
 p2_value=0.5
-p2_name="reionization_width"
+p2_name="helium_fullreio_width"
 p3_value=0.0561
 p3_name="tau_reio"
 
@@ -76,9 +76,22 @@ os_str = 'python3 week6_three/chi2_camb.py '
 for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges]:
     os_str += str(i)+' '
 f = os.popen(os_str, 'r')
+f.close()
+print("======chi2 Finish======")
+
+#=========sigma========
+os.system("mkdir week6_result")
+os_str = 'python3 week6_three/sigma.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges]:
+    os_str += str(i)+' '
+f = os.popen(os_str, 'r')
 res = f.readlines()
 print(res)
 f.close()
-print("======chi2 Finish======")
+
+with open('result.txt','a') as f:
+    f.write(str(res)+'\n')
+    f.write("===sigma Finish===\n")
+print("======sigma Finish======")
 
 

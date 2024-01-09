@@ -1,17 +1,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import leastsq
+import sys
 
 #======input=========#
-p1_value=0.001
-p1_sigma=0.0001806
-p1_name="r"#input("p1_name ")
-p2_value=0.5
-p2_sigma=0.1316
-p2_name="reionization_width"#input("p2_name ")
-p3_value=0.0561
-p3_sigma=0.0003851
-p3_name="tau_reio"#input("p3_name ")
+try:
+    p1_value=float(sys.argv[1])
+    p1_sigma=float(sys.argv[2])
+    p1_name=sys.argv[3]
+    p2_value=float(sys.argv[4])
+    p2_sigma=float(sys.argv[5])
+    p2_name=sys.argv[6]
+    p3_value=float(sys.argv[7])
+    p3_sigma=float(sys.argv[8])
+    p3_name=sys.argv[9]
+    steps=float(sys.argv[10])
+    ranges=float(sys.argv[11])
+
+except Exception as e:
+    print("Input Error:", e)
 
 p_value=[p1_value,p2_value,p3_value]
 p_sigma=[p1_sigma,p2_sigma,p3_sigma]
@@ -26,7 +33,6 @@ def posterior(chi2):
         for j in range(chi2.shape[1]):
             for k in range(chi2.shape[2]):
                 post[i,j,k]=np.exp(-0.5*chi2[i,j,k])
-    print(post)
     return post
 
 def func(r,p,mu):
@@ -38,13 +44,13 @@ def residuals(p,y,x,mu):
     return y-func(x,p,mu)
 
 def fit(sigma0,N0,posts,values,sigmas,i):
-    plsq=leastsq(residuals,[sigma0,N0],args=(posts[i],np.arange(float(values[i]-3*sigmas[i]),float(values[i]+3*sigmas[i]),float(sigmas[i]/4.0)),values[i]))
+    plsq=leastsq(residuals,[sigma0,N0],args=(posts[i],np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps)),values[i]))
     print(plsq[0])
     return plsq[0]
 
 def draw_1D(plsq,posts,values,sigmas,names,i):
-    plt.plot(np.arange(float(values[i]-3*sigmas[i]),float(values[i]+3*sigmas[i]),float(sigmas[i]/4.0)),posts[i])
-    plt.plot(np.arange(float(values[i]-3*sigmas[i]),float(values[i]+3*sigmas[i]),float(sigmas[i]/4.0)),[func(j,plsq,values[i]) for j in np.arange(float(values[i]-3*sigmas[i]),float(values[i]+3*sigmas[i]),float(sigmas[i]/4.0))])
+    plt.plot(np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps)),posts[i])
+    plt.plot(np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps)),[func(j,plsq,values[i]) for j in np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps))])
     plt.xlabel(names[i])
     plt.ylabel("P("+names[i]+")")
     plt.savefig("week6_result/"+names[i]+"1D_posterior.jpg")
@@ -57,7 +63,7 @@ def draw_2D(orders,values,sigmas,names,posts):
     i=orders[0]
     j=orders[1]
     k=orders[2]
-    X,Y = np.meshgrid(np.arange(float(values[j]-3*sigmas[j]),float(values[j]+3*sigmas[j]),float(sigmas[j]/4.0)),np.arange(float(values[i]-3*sigmas[i]),float(values[i]+3*sigmas[i]),float(sigmas[i]/4.0)))
+    X,Y = np.meshgrid(np.arange(float(values[j]-ranges*sigmas[j]),float(values[j]+ranges*sigmas[j]),float(sigmas[j]/steps)),np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps)))
     contour=ay.contourf(X,Y,posts[k])#,colors=['blue','lightsteelblue','white'])
     ay.set_xlabel(names[j])
     ay.set_ylabel(names[i])
@@ -68,8 +74,6 @@ def draw_2D(orders,values,sigmas,names,posts):
 
 #========variables=========#
 post=posterior(chi2_total)
-#print(post.shape[0])
-#print(post.shape[1])
 post_p1=np.zeros(post.shape[0])
 post_p2=np.zeros(post.shape[1])
 post_p3=np.zeros(post.shape[2])
@@ -80,17 +84,20 @@ post_p2p3=np.zeros((post.shape[1],post.shape[2]))
 for i in range(post.shape[0]):
     for j in range(post.shape[1]):
         for k in range(post.shape[2]):
-            post_p1[i]+=post[i,j,k]*p2_sigma/4*p3_sigma/4
-            post_p2[j]+=post[i,j,k]*p1_sigma/4*p3_sigma/4
-            post_p3[k]+=post[i,j,k]*p1_sigma/4*p2_sigma/4
-            post_p1p2[i,j]+=post[i,j,k]*p3_sigma/4
-            post_p1p3[i,k]+=post[i,j,k]*p2_sigma/4
-            post_p2p3[j,k]+=post[i,j,k]*p1_sigma/4
+            post_p1[i]+=post[i,j,k]*p2_sigma/steps*p3_sigma/steps
+            post_p2[j]+=post[i,j,k]*p1_sigma/steps*p3_sigma/steps
+            post_p3[k]+=post[i,j,k]*p1_sigma/steps*p2_sigma/steps
+            post_p1p2[i,j]+=post[i,j,k]*p3_sigma/steps
+            post_p1p3[i,k]+=post[i,j,k]*p2_sigma/steps
+            post_p2p3[j,k]+=post[i,j,k]*p1_sigma/steps
 
 post_ps=[post_p1,post_p2,post_p3]
 post_pps=[post_p1p2,post_p1p3,post_p2p3]
 
-sigma0=[1e-3,0.01,1e-3]
+sigma01=10**(int(np.log10(p1_sigma)))
+sigma02=10**(int(np.log10(p2_sigma)))
+sigma03=10**(int(np.log10(p1_sigma)))
+sigma0=[sigma01,sigma02,sigma03]
 for i in [0,1,2]:
     N0=1e8
     plsq=fit(sigma0[i],N0,post_ps,p_value,p_sigma,i)

@@ -106,4 +106,3 @@ for i in range(chi2_total.shape[0]):
             chi2_total[i,j,k]=chi2_total[i,j,k]-max_chi
 
 np.save("chi21_Wishert.npy",chi2_total)
-print(chi2_total)

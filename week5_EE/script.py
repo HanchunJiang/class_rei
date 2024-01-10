@@ -7,8 +7,8 @@ p1_name="r"
 p2_value=8.5
 p2_name="z_reio"
 
-steps=1 #sigma/step
-ranges=3 #range*step
+steps=10 #sigma/step
+ranges=5 #range*step
 
 delta1=0.000005
 delta2=0.0001

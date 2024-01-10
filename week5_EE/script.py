@@ -7,7 +7,7 @@ p1_name="r"
 p2_value=8.5
 p2_name="z_reio"
 
-steps=2 #sigma/step
+steps=1 #sigma/step
 ranges=3 #range*step
 
 delta1=0.000005
@@ -74,9 +74,9 @@ f.close()
 print("======chi2 Finish======")
 
 #=========sigma========
-os.system("mkdir week6_result")
-os_str = 'python3 week6_three/sigma.py '
-for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges]:
+os.system("mkdir week5result")
+os_str = 'python3 week5_EE/sigma.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges]:
     os_str += str(i)+' '
 f = os.popen(os_str, 'r')
 res = f.readlines()

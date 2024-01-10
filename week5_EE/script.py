@@ -7,8 +7,8 @@ p1_name="r"
 p2_value=8.5
 p2_name="z_reio"
 
-steps=10 #sigma/step
-ranges=5 #range*step
+steps=2 #sigma/step
+ranges=3 #range*step
 
 delta1=0.000005
 delta2=0.0001
@@ -57,8 +57,8 @@ print("======Fisher Finish======")
 p1_sigma=float(res[0])
 p2_sigma=float(res[1])
 
-os_str = 'python3 week6_three/powerspectrum_camb.py '
-for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges,open1]:
+os_str = 'python3 week5_EE/powerspectrum_camb.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges,open1]:
     os_str += str(i)+' '
 f = os.popen(os_str, 'r')
 f.close()
@@ -66,8 +66,8 @@ f.close()
 print("======PS Finish======")
 
 #=========chi2========
-os_str = 'python3 week6_three/chi2_camb.py '
-for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,p3_value,p3_sigma,p3_name,steps,ranges]:
+os_str = 'python3 week5_EE/chi2_camb.py '
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges]:
     os_str += str(i)+' '
 f = os.popen(os_str, 'r')
 f.close()

@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 #======parameters=========#
 Tcmb=2.75*10**6
@@ -14,11 +15,14 @@ data_l1m=np.loadtxt('reio_camb02_cl_lensed.dat')
 data_l2p=np.loadtxt('reio_camb03_cl_lensed.dat')
 data_l2m=np.loadtxt('reio_camb04_cl_lensed.dat')
 
-delta_1=0.000005
-delta_2=0.0001
+try:
+    delta_1=float(sys.argv[3])
+    delta_2=float(sys.argv[4])
 
-p1_value=0.001
-p2_value=0.0561
+    p1_value=float(sys.argv[1])
+    p2_value=float(sys.argv[2])
+except Exception as e:
+    print("Input Error:", e)
 
 p1_name="r"
 p2_name="tau"
@@ -53,7 +57,7 @@ for i in np.arange(2,2002,1):
 #Fisher(EE_fid,BB_fid,NN,EE_ip,EE_im,BB_ip,BB_im,EE_jp,EE_jm,BB_jp,BB_jm,delta_i,delta_j)
 F_11=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l1p,EE_l1m,BB_l1p,BB_l1m,EE_l1p,EE_l1m,BB_l1p,BB_l1m,delta_1,delta_1)
 F_22=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l2p,EE_l2m,BB_l2p,BB_l2m,EE_l2p,EE_l2m,BB_l2p,BB_l2m,delta_2,delta_2)
-F_12=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l1p,EE_l1m,BB_l1p,BB_l1m,EE_l2p,EE_l1m,BB_l2p,BB_l2m,delta_1,delta_2)
+#F_12=1.5*Fisher(EE_lfid,BB_lfid,spectrum,EE_l1p,EE_l1m,BB_l1p,BB_l1m,EE_l2p,EE_l1m,BB_l2p,BB_l2m,delta_1,delta_2)
 
 print(1/np.sqrt(F_11))
 print(1/np.sqrt(F_22))

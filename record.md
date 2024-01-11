@@ -117,4 +117,4 @@ $x_e(y)=\frac{f}{2}(1+\tanh(\frac{y(z_{re})-y}{\Delta_y}))$
     * `02`: r=0.09995
 
 * Fisher: 0.00028208515761258944
-
+* Gaussian fitting: 2.82085699e-04

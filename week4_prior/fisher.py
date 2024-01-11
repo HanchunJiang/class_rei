@@ -11,14 +11,14 @@ delta_l=1
 sigma_tau_planck=1e-4#0.0071
 
 #=========input==============#
-data_lfid=np.loadtxt('reio_camb00_cl.dat')
-data_l1p=np.loadtxt('reio_camb01_cl.dat')
-data_l1m=np.loadtxt('reio_camb02_cl.dat')
-data_l2p=np.loadtxt('reio_camb03_cl.dat')
-data_l2m=np.loadtxt('reio_camb04_cl.dat')
+data_lfid=np.loadtxt('reio_camb00_cl_lensed.dat')
+data_l1p=np.loadtxt('reio_camb01_cl_lensed.dat')
+data_l1m=np.loadtxt('reio_camb02_cl_lensed.dat')
+data_l2p=np.loadtxt('reio_camb03_cl_lensed.dat')
+data_l2m=np.loadtxt('reio_camb04_cl_lensed.dat')
 
 delta_1=0.00005
-delta_2=0.00001
+delta_2=0.0001
 
 p1_value=0.1
 p2_value=0.0561

@@ -1,15 +1,19 @@
 import os
 import numpy as np
+import sys
 #=====input=======
-p1_value=0.1
-p1_sigma=0.001106
-p1_name="r"#input("p1_name ")
-p2_value=0.0561
-p2_sigma=8.093e-5
-p2_name="tau_reio"#input("p2_name ")
-
-open1=input("any additional condition?")
-open1=bool(int(open1))
+try:
+    p1_value=float(sys.argv[1])
+    p1_sigma=float(sys.argv[2])
+    p1_name=sys.argv[3]
+    p2_value=float(sys.argv[4])
+    p2_sigma=float(sys.argv[5])
+    p2_name=sys.argv[6]
+    steps=float(sys.argv[7])
+    ranges=float(sys.argv[8])
+    open1=bool(int(sys.argv[9]))
+except Exception as e:
+    print("Input Error:", e)
 
 content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
 
@@ -18,10 +22,10 @@ if open1==True:
     content.append(temp+'\n')
 
 j=-1
-for p1 in np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0)):
+for p1 in np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps)):
     j+=1
     p=0
-    for p2 in np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)):
+    for p2 in np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)):
         with open('chi1_'+str(j)+'_'+str(int(p/100))+'_.ini','w') as f:
             for i in range(len(content)):
                 f.write(content[i])

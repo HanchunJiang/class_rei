@@ -2,10 +2,10 @@ import numpy as np
 
 #======input=========#
 p1_value=0.1
-p1_sigma=0.0002303
+p1_sigma=0.001106
 p1_name="r"#input("p1_name ")
 p2_value=0.0561
-p2_sigma=0.0001085
+p2_sigma=8.093e-5
 p2_name="tau_reio"#input("p2_name ")
 
 #======parameters=========#
@@ -56,7 +56,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('reio_camb00_cl.dat')
+data_fid=np.loadtxt('reio_camb00_cl_lensed.dat')
 BB_fid=data_fid[0:2000,2]
 errors_BB=error(BB_fid,spectrum)
 
@@ -66,9 +66,9 @@ for p1 in np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(
     p=0
     for i in range(len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))):
         if (i%100)<10:
-            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl.dat')
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
         else:
-            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl.dat')
+            data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl_lensed.dat')
         BBs=data[0:2000,2]
         chi2_BB[j,i]=chi2(BB_fid,BBs,spectrum)#errors_BB)
 

@@ -4128,14 +4128,22 @@ int thermodynamics_reionization_function(
   //TODO: 实际上x_e在这里定义
   case reio_mine://直接搞一条直线了
     /** - --> case z > z_reio_start */
+    double reionization_complete_redshift=6.1;//TODO:之后加一个参数：reionization_complete_redshift
     if (z > preio->reionization_parameters[preio->index_re_reio_start]) {
       *x = preio->reionization_parameters[preio->index_re_xe_before];
     }
-    else if (z<5){
+    else if (z<reionization_complete_redshift){
       *x = preio->reionization_parameters[preio->index_re_xe_after];
     }
     else {
       /** - --> case z < z_reio_start: hydrogen contribution (tanh of complicated argument) */
+      double lam,smooth;
+      lam=-log(0.5)/pow(preio->reionization_parameters[preio->index_re_reio_redshift]-reionization_complete_redshift,preio->reionization_parameters[preio->index_re_reio_exponent]);
+      smooth=1/(1+preio->reionization_parameters[preio->index_re_reio_width]/pow(z-reionization_complete_redshift,2));
+      *x=exp(-lam*pow(z-reionization_complete_redshift,preio->reionization_parameters[preio->index_re_reio_exponent])*smooth)*(preio->reionization_parameters[preio->index_re_xe_after]
+            -preio->reionization_parameters[preio->index_re_xe_before])+preio->reionization_parameters[preio->index_re_xe_before];
+
+      /*
       argument = (pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
                       preio->reionization_parameters[preio->index_re_reio_exponent])
                   -pow((1.+z),preio->reionization_parameters[preio->index_re_reio_exponent]))
@@ -4145,14 +4153,13 @@ int thermodynamics_reionization_function(
         /preio->reionization_parameters[preio->index_re_reio_width];
 
       argument = z-5;
-      /* argument goes from 0 to infty, not from -infty to infty like
-         in reio_camb case. Thus tanh(argument) goes from 0 to 1, not
-         from -1 to 1.  */
+      // argument goes from 0 to infty, not from -infty to infty like in reio_camb case. Thus tanh(argument) goes from 0 to 1, not from -1 to 1.
 
       *x = (preio->reionization_parameters[preio->index_re_xe_after]
             -preio->reionization_parameters[preio->index_re_xe_before])
         *exp(-2*argument)
         +preio->reionization_parameters[preio->index_re_xe_before];
+      */ 
     }
   break;
 

@@ -16,29 +16,29 @@ delta2=0.0001
 open1=0#additional condition for powerspectrum
 
 #======power spectrum for fisher==========
-content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_camb\n','lensing=yes\n']
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_mine\n','lensing=yes\n']
 
 #Fiducial
-with open('reio_camb.ini','w') as f:
+with open('reio_mine.ini','w') as f:
     for i in range(len(content)):
         f.write(content[i])
     f.write(p1_name+'='+str(round(p1_value,10))+'\n')
     f.write(p2_name+'='+str(round(p2_value,10))+'\n')
-os.system('./class reio_camb.ini')
+os.system('./class reio_mine.ini')
 
 #others
 for p1,p2 in [(p1_value+delta1,p2_value),(p1_value-delta1,p2_value),(p1_value,p2_value+delta2),(p1_value,p2_value-delta2)]:
-    with open('reio_camb.ini','w') as f:
+    with open('reio_mine.ini','w') as f:
         for i in range(len(content)):
             f.write(content[i])
         f.write(p1_name+'='+str(round(p1,10))+'\n')
         f.write(p2_name+'='+str(round(p2,10))+'\n')
-    os.system('./class reio_camb.ini')
+    os.system('./class reio_mine.ini')
 
-os.system("mv output/reio_camb*dat .")
-os.system("rm -rf reio_camb*t.dat")
-os.system("rm -rf reio_camb*s.dat")
-os.system("rm -rf reio_camb*l.dat")
+os.system("mv output/reio_mine*dat .")
+os.system("rm -rf reio_mine*t.dat")
+os.system("rm -rf reio_mine*s.dat")
+os.system("rm -rf reio_mine*l.dat")
 
 #===========Fisher=============
 os_str = 'python3 week5_EE/fisherEE.py '

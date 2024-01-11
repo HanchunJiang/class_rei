@@ -9,11 +9,11 @@ f_sky=1
 delta_l=1
 
 #=========input==============#
-data_lfid=np.loadtxt('reio_camb00_cl_lensed.dat')
-data_l1p=np.loadtxt('reio_camb01_cl_lensed.dat')
-data_l1m=np.loadtxt('reio_camb02_cl_lensed.dat')
-data_l2p=np.loadtxt('reio_camb03_cl_lensed.dat')
-data_l2m=np.loadtxt('reio_camb04_cl_lensed.dat')
+data_lfid=np.loadtxt('reio_mine00_cl_lensed.dat')
+data_l1p=np.loadtxt('reio_mine01_cl_lensed.dat')
+data_l1m=np.loadtxt('reio_mine02_cl_lensed.dat')
+data_l2p=np.loadtxt('reio_mine03_cl_lensed.dat')
+data_l2m=np.loadtxt('reio_mine04_cl_lensed.dat')
 
 try:
     delta_1=float(sys.argv[3])

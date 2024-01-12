@@ -67,7 +67,7 @@ sigma01=10**(int(np.log10(p1_sigma)))
 sigma02=10**(int(np.log10(p2_sigma)))
 sigma0=[sigma01,sigma02]
 for i in [0,1]:
-    N0=1e8
+    N0=1e26
     plsq=fit(sigma0[i],N0,post_ps,p_value,p_sigma,i)
     draw_1D(plsq,post_ps,p_value,p_sigma,p_name,i)
 

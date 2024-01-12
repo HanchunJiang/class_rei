@@ -1166,7 +1166,7 @@ int thermodynamics_set_parameters_reionization(
     }
     if (pth->reio_parametrization == reio_mine) {
       /* xe_after_reio: neglect He ionization */
-      preio->reionization_parameters[preio->index_re_xe_after] = 1.;
+      preio->reionization_parameters[preio->index_re_xe_after] = 1. + pth->YHe/(_not4_*(1.-pth->YHe));
       //+ 2*pth->YHe/(_not4_*(1.-pth->YHe));    /* xe_after_reio: H + fully ionized He */
     }
 
@@ -1198,7 +1198,7 @@ int thermodynamics_set_parameters_reionization(
 
       /* infer starting redshift for hydrogen */
 
-      if (pth->reio_parametrization == reio_camb) {
+      if (pth->reio_parametrization == reio_camb||pth->reio_parametrization == reio_mine) {
 
         preio->reionization_parameters[preio->index_re_reio_start] = preio->reionization_parameters[preio->index_re_reio_redshift]+
           ppr->reionization_start_factor*pth->reionization_width;
@@ -2235,8 +2235,6 @@ int thermodynamics_reionization_evolve_with_tau(
   switch (pth->reio_parametrization) {
   //TODO: 只有camb和half_tanh有tau，所以自定义的函数能不能输入tau还是个问题
   case reio_mine:
-    ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_sup;
-    break;
   case reio_camb:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_z_start_max;
     break;
@@ -2302,12 +2300,12 @@ int thermodynamics_reionization_evolve_with_tau(
   /* minimum possible starting redshift */
   //TODO: 先照抄half_tanh的判定
   switch (pth->reio_parametrization) {
+  case reio_mine:
   case reio_camb:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_start_factor*pth->reionization_width;
     if (ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] < pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width) {
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width;
     }
-  case reio_mine:
   case reio_half_tanh:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_inf;
     break;
@@ -2370,6 +2368,8 @@ int thermodynamics_reionization_evolve_with_tau(
 
     /* infer starting redshift for hydrogen (Note, that this is only the start of the ADDITIONAL tanh re-ionization function)*/
     switch (pth->reio_parametrization) {
+    //TODO: 先照抄camb的判定
+    case reio_mine:
     case reio_camb:
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_redshift]+ppr->reionization_start_factor*pth->reionization_width;
       /* if starting redshift for helium is larger, take that one
@@ -2378,8 +2378,6 @@ int thermodynamics_reionization_evolve_with_tau(
         ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width;
       }
       break;
-    //TODO: 先照抄half_tanh的判定
-    case reio_mine:
     case reio_half_tanh:
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = z_mid;
       break;
@@ -4135,6 +4133,10 @@ int thermodynamics_reionization_function(
     }
     else if (z<reionization_complete_redshift){
       *x = preio->reionization_parameters[preio->index_re_xe_after];
+      argument = (preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] - z)
+        /preio->reionization_parameters[preio->index_re_helium_fullreio_width];
+      *x += preio->reionization_parameters[preio->index_re_helium_fullreio_fraction]
+        *(tanh(argument)+1.)/2.;
     }
     else {
       /** - --> case z < z_reio_start: hydrogen contribution (tanh of complicated argument) */
@@ -4144,6 +4146,12 @@ int thermodynamics_reionization_function(
       *x=exp(-lam*pow(z-reionization_complete_redshift,preio->reionization_parameters[preio->index_re_reio_exponent])*smooth)*(preio->reionization_parameters[preio->index_re_xe_after]
             -preio->reionization_parameters[preio->index_re_xe_before])+preio->reionization_parameters[preio->index_re_xe_before];
 
+      /** - --> case z < z_reio_start: helium contribution (tanh of simpler argument) */
+      argument = (preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] - z)
+        /preio->reionization_parameters[preio->index_re_helium_fullreio_width];
+
+      *x += preio->reionization_parameters[preio->index_re_helium_fullreio_fraction]
+        *(tanh(argument)+1.)/2.;
       /*
       argument = (pow((1.+preio->reionization_parameters[preio->index_re_reio_redshift]),
                       preio->reionization_parameters[preio->index_re_reio_exponent])

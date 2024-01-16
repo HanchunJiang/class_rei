@@ -8,7 +8,8 @@ p_end=float(input("p_end "))
 p_step=float(input("p_step "))
 p_name=input("p_name ")
 
-chi2_BB=np.load("chi21_BB_"+p_name+".npy")
+chi2_BB=np.load("chi21_EE_"+p_name+".npy")
+print(chi2_BB)
 
 #=======functions============#
 def posterior(chi2):
@@ -46,7 +47,7 @@ sigma0=1e-5
 plsq=leastsq(residuals,sigma0,args=(post_BB,np.arange(p_start,p_end,p_step)))
 print(plsq[0])
 plt.plot(np.arange(p_start,p_end,p_step),chi2_BB[0])
-plt.plot(np.arange(p_start,p_end,p_step),fit_curve(np.arange(p_start,p_end,p_step),plsq[0]))
+#plt.plot(np.arange(p_start,p_end,p_step),fit_curve(np.arange(p_start,p_end,p_step),plsq[0]))
 plt.xlabel(p_name)
 plt.ylabel(r"$\chi^2$")
 plt.savefig(p_name+"_chi2.jpg")
@@ -59,11 +60,5 @@ plt.xlabel(p_name)
 plt.ylabel("P("+p_name+")")
 plt.savefig(p_name+"_posterior.jpg")
 plt.show()
-'''
-sigma2=0
-R=np.arange(p_start,p_end,p_step)
-for i in range(len(post_BB)):
-    sigma2+=p_step*(R[i]-0.1)**2*post_BB[i]*N
-'''
 
 

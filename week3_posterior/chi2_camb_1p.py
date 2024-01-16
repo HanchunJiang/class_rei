@@ -49,7 +49,8 @@ def chi2(Cl_fid,Cl,sigma):
 
 #========result========#
 #chi2_EE=np.zeros((len(np.arange(z_start,z_end,z_step)),len(np.arange(r_start,r_end,r_step))))
-chi2_BB=np.zeros((1,len(np.arange(p_start,p_end,p_step))))
+chi2_EE=np.zeros((1,len(np.arange(p_start,p_end,p_step))))
+#chi2_BB=np.zeros((1,len(np.arange(p_start,p_end,p_step))))
 
 #====Array=======#
 #noise ps
@@ -58,23 +59,33 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('reio_camb09_cl.dat')
-#EE_fid=data_fid[0:2000,2]
-BB_fid=data_fid[0:2000,4]
+data_fid=np.loadtxt('output/reio_mine00_cl_lensed.dat')
+EE_fid=data_fid[0:2000,1]
+#BB_fid=data_fid[0:2000,2]
 #errors_EE=error(EE_fid,spectrum)
-errors_BB=error(BB_fid,spectrum)
+errors_EE=error(EE_fid,spectrum)
 for i in range(len(np.arange(p_start,p_end,p_step))):
     if (i%100)<10:
         data=np.loadtxt('output/'+p_name+'1_0_'+str(int(i/100))+'_0'+str(i%100)+'_cl.dat')
     else:
         data=np.loadtxt('output/'+p_name+'1_0_'+str(int(i/100))+'_'+str(i%100)+'_cl.dat')
-    #EEs=data[0:2000,2]
-    BBs=data[0:2000,2]
+    EEs=data[0:2000,1]
+    #BBs=data[0:2000,2]
     #errors_EE=error(EEs,spectrum)
     #chi2_EE[j,i]=chi2(EE_fid,EEs,errors_EE)
     #errors_BB=error(BBs,spectrum)
-    chi2_BB[0,i]=chi2(BB_fid,BBs,errors_BB)
+    chi2_EE[0,i]=chi2(EE_fid,EEs,errors_EE)
 
 #np.save("chi21_EE.npy",chi2_EE)
-np.save("chi21_BB_"+p_name+".npy",chi2_BB)
+max_chi=np.max(chi2_EE[0])
+min_i=0
+min_chi=0
+for i in range(len(chi2_EE[0])):
+    chi2_EE[0,i]-=max_chi
+    if chi2_EE[0,i]<min_chi:
+        min_chi=chi2_EE[0,i]
+        min_i=i
+np.save("chi21_EE_"+p_name+".npy",chi2_EE)
+print(min_i)
+print(np.arange(p_start,p_end,p_step)[min_i])
 

@@ -15,6 +15,7 @@ try:
 except Exception as e:
     print("Input Error:", e)
 
+ell=10
 #======parameters=========#
 Tcmb=2.75*10**6
 sigma_nu=2*np.pi/180/60
@@ -25,8 +26,8 @@ delta_l=1
 #=======functions=========#
 def error(PS,NN):
     '''calculate sigma in chi2'''
-    errors=np.zeros(2000)
-    for i in np.arange(2,2002,1):
+    errors=np.zeros(ell-2)
+    for i in np.arange(2,ell,1):
         errors[i-2]=((PS[i-2]+NN[i-2])/np.sqrt((i+0.5)*f_sky*delta_l))
     #print(errors)
     return errors
@@ -83,8 +84,8 @@ for p1 in np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sig
         #print(EEs)
 
         #chi2_BB[j,i]
-        chi2_BB=chi2(BB_fid,BBs,spectrum)#errors_BB)
-        chi2_EE=chi2(EE_fid,EEs,spectrum)
+        chi2_BB=chi2(BB_fid,BBs,spectrum[0:ell-2])#errors_BB)
+        chi2_EE=chi2(EE_fid,EEs,spectrum[0:ell-2])
         chi2_total[j,i]=chi2_BB+chi2_EE
 
 max_chi=np.max(chi2_total)

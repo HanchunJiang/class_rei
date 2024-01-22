@@ -1020,6 +1020,12 @@ int thermodynamics_indices(
     class_define_index(ptrp->index_re_first_xe,_TRUE_,index_re,ptrp->re_z_size);
     class_define_index(ptrp->index_re_step_sharpness,_TRUE_,index_re,1);
     class_define_index(ptrp->index_re_xe_before,_TRUE_,index_re,1);
+    //reio_many_tanh:加上Helium
+    class_define_index(ptrp->index_re_xe_before,_TRUE_,index_re,1);
+    class_define_index(ptrp->index_re_xe_after,_TRUE_,index_re,1);
+    class_define_index(ptrp->index_re_helium_fullreio_fraction,_TRUE_,index_re,1);
+    class_define_index(ptrp->index_re_helium_fullreio_redshift,_TRUE_,index_re,1);
+    class_define_index(ptrp->index_re_helium_fullreio_width,_TRUE_,index_re,1);
     break;
 
     /* case where x_e(z) is linearly interpolated between knots */
@@ -1305,6 +1311,19 @@ int thermodynamics_set_parameters_reionization(
     /** - (d) if reionization implemented with reio_many_tanh scheme */
   case reio_many_tanh:
 
+    //reio_many_tanh: 给many_tanh加上He
+    if (pth->reio_parametrization == reio_many_tanh) {
+      /* xe_after_reio: neglect He ionization */
+      preio->reionization_parameters[preio->index_re_xe_after] = 1. + pth->YHe/(_not4_*(1.-pth->YHe));
+      //+ 2*pth->YHe/(_not4_*(1.-pth->YHe));    /* xe_after_reio: H + fully ionized He */
+    }
+    preio->reionization_parameters[preio->index_re_helium_fullreio_fraction] = pth->YHe/(_not4_*(1.-pth->YHe)); /* helium_fullreio_fraction (checked before that denominator is non-zero) */
+    preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] = pth->helium_fullreio_redshift; /* helium_fullreio_redshift */
+    preio->reionization_parameters[preio->index_re_helium_fullreio_width] = pth->helium_fullreio_width;    /* helium_fullreio_width */
+    class_test(preio->reionization_parameters[preio->index_re_helium_fullreio_width]==0,
+               pth->error_message,
+               "stop to avoid division by zero");
+    
     /* this algorithm requires at least one jump centers */
     class_test(pth->many_tanh_num<1,
                pth->error_message,
@@ -2302,6 +2321,7 @@ int thermodynamics_reionization_evolve_with_tau(
   switch (pth->reio_parametrization) {
   case reio_mine:
   case reio_camb:
+  case reio_many_tanh:
     ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ppr->reionization_start_factor*pth->reionization_width;
     if (ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] < pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width) {
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = pth->helium_fullreio_redshift+ppr->reionization_start_factor*pth->helium_fullreio_width;
@@ -2370,6 +2390,8 @@ int thermodynamics_reionization_evolve_with_tau(
     switch (pth->reio_parametrization) {
     //TODO: 先照抄camb的判定
     case reio_mine:
+    //给reio_many_tanh也加上这个判定:
+    case reio_many_tanh:
     case reio_camb:
       ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_start] = ptw->ptrp->reionization_parameters[ptw->ptrp->index_re_reio_redshift]+ppr->reionization_start_factor*pth->reionization_width;
       /* if starting redshift for helium is larger, take that one
@@ -4309,10 +4331,18 @@ int thermodynamics_reionization_function(
 
         *x += one_jump;
       }
+      argument = (preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] - z)
+        /preio->reionization_parameters[preio->index_re_helium_fullreio_width];
 
+      *x += preio->reionization_parameters[preio->index_re_helium_fullreio_fraction]
+        *(tanh(argument)+1.)/2.;
     }
     else{
       *x = preio->reionization_parameters[preio->index_re_first_xe];
+      argument = (preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] - z)
+        /preio->reionization_parameters[preio->index_re_helium_fullreio_width];
+      *x += preio->reionization_parameters[preio->index_re_helium_fullreio_fraction]
+        *(tanh(argument)+1.)/2.;
     }
     break;
 

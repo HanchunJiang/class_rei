@@ -3,19 +3,19 @@ import sys
 
 #======input=========#
 try:
-    p1_value=float(sys.argv[1])
-    p1_sigma=float(sys.argv[2])
-    p1_name=sys.argv[3]
-    p2_value=float(sys.argv[4])
-    p2_sigma=float(sys.argv[5])
-    p2_name=sys.argv[6]
-    steps=float(sys.argv[7])
-    ranges=float(sys.argv[8])
+    p1_start=float(sys.argv[1])
+    p1_end=float(sys.argv[2])
+    p1_step=float(sys.argv[3])
+    p1_name=sys.argv[4]
+    p2_start=float(sys.argv[5])
+    p2_end=float(sys.argv[6])
+    p2_step=float(sys.argv[7])
+    p2_name=sys.argv[8]
 
 except Exception as e:
     print("Input Error:", e)
 
-ell=10
+ell=2002
 #======parameters=========#
 Tcmb=2.75*10**6
 sigma_nu=2*np.pi/180/60
@@ -55,7 +55,7 @@ def chi2(Cl_fid,Cl,NN):
 #========result========#
 #chi2_BB=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
 #chi2_EE=np.zeros((len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))),len(np.arange(float(p2_value-5*p2_sigma),float(p2_value+5*p2_sigma),float(p2_sigma/10.0)))))
-chi2_total=np.zeros((len(np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps))),len(np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)))))
+chi2_total=np.zeros((len(np.arange(float(p1_start),float(p1_end),float(p1_step))),len(np.arange(float(p2_start),float(p2_end),float(p2_step)))))
 #chi2_total=np.zeros(len(np.arange(float(p1_value-5*p1_sigma),float(p1_value+5*p1_sigma),float(p1_sigma/10.0))))
 
 #====Array=======#
@@ -71,9 +71,9 @@ EE_fid=data_fid[0:2000,1]
 #errors_BB=error(BB_fid,spectrum)
 
 j=-1
-for p1 in np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps)):
+for p1 in np.arange(float(p1_start),float(p1_end),float(p1_step)):
     j+=1
-    for i in range(len(np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)))):
+    for i in range(len(np.arange(float(p2_start),float(p2_end),float(p2_step)))):
         if (i%100)<10:
             data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
         else:
@@ -93,4 +93,4 @@ for i in range(chi2_total.shape[0]):
     for j in range(chi2_total.shape[1]):
         chi2_total[i,j]=chi2_total[i,j]-max_chi
 
-np.save("chi21_Wishert.npy",chi2_total)
+np.save("week7_search/chi21_Wishert.npy",chi2_total)

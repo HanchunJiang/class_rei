@@ -53,6 +53,15 @@ def fit(sigma0,N0,posts,values,sigmas,i):
     return plsq[0]
 
 post=posterior(chi2_total)
+
+#========max r and z===========
+a=np.argmax(post)
+maxi=int(a/post.shape[0])
+maxj=a%post.shape[1]
+print(np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps))[maxi])
+print(np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps))[maxj])
+
+#=========post 1p==============
 post_p1=np.zeros(post.shape[0])
 post_p2=np.zeros(post.shape[1])
 
@@ -66,11 +75,13 @@ post_ps=[post_p1,post_p2]
 sigma01=10**(int(np.log10(p1_sigma)))
 sigma02=10**(int(np.log10(p2_sigma)))
 sigma0=[sigma01,sigma02]
+p_value=[0.00068779,p2_value]
 for i in [0,1]:
     N0=1e12
     plsq=fit(sigma0[i],N0,post_ps,p_value,p_sigma,i)
     draw_1D(plsq,post_ps,p_value,p_sigma,p_name,i)
 
+p_value=[p1_value,p2_value]
 fig = plt.figure()
 ay=fig.add_subplot()
 X,Y = np.meshgrid(np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_sigma),float(p2_sigma/steps)),np.arange(float(p1_value-ranges*p1_sigma),float(p1_value+ranges*p1_sigma),float(p1_sigma/steps)))

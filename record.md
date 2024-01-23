@@ -194,3 +194,27 @@ $\sigma_ze$=4.56524572e-02
 * 12.65太小了
 * 14太大了
 * 0.00068 13.7
+
+# 0122
+`reio_many`参数设置：
+output=pCl,lCl
+modes=s,t
+reio_parametrization=reio_many_tanh
+lensing=yes
+r=0.001
+many_tanh_num = 3
+many_tanh_z = 6,8,10
+many_tanh_xe = 1.08,0.2,0.9
+many_tanh_width = 0.5
+write_thermodynamics = yes
+thermodynamics_verbose=4
+
+* $\tau$=0.059746
+
+0.00087
+8.359999999999983
+[-3.02448667e-04  6.12417993e+09]
+[3.28114527e-01 6.07316059e+06]
+
+# 0123
+总之就是旧的会产生阶跃，所以要换新的

@@ -36,8 +36,8 @@ spectrum=np.zeros(ell-2)
 for i in np.arange(2,ell,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
-data1=np.loadtxt('reio_camb01_cl_lensed.dat')
-data2=np.loadtxt('reio_many00_cl_lensed.dat')
+data1=np.loadtxt('output/reio_camb02_cl_lensed.dat')
+data2=np.loadtxt('output/reio_mine00_cl_lensed.dat')
 
 l1=data1[:,0]
 l2=data2[:,0]
@@ -46,11 +46,11 @@ EE2=data2[:,1]
 
 #errors_EE2=error(EE2,spectrum)
 #errors_EE1=error(EE1,spectrum)
-plt.plot(l2[0:ell-2],EE2[0:ell-2]*(2.7255e6)**2,label="reio_many")
-plt.plot(l1[0:ell-2],EE1[0:ell-2]*(2.7255e6)**2,label="reio_camb")
-plt.errorbar(np.arange(2,ell,1),points,yerr=errors,label="paper",fmt="o")
+plt.plot(l2[0:ell-2],EE2[0:ell-2]*(2.7255e6)**2,label="reio_exp")
+plt.plot(l1[0:ell-2],EE1[0:ell-2]*(2.7255e6)**2,label="reio_tanh")
+#plt.errorbar(np.arange(2,ell,1),points,yerr=errors,label="paper",fmt="o")
 #plt.errorbar(np.arange(2,ell,1),EE2[0:ell-2],yerr=errors_EE2,label="reio_many")
 #plt.errorbar(np.arange(2,ell,1),EE1[0:ell-2],yerr=errors_EE1,label="reio_camb")
 plt.yscale('log')
 plt.legend()
-plt.savefig("check_EE1.jpg")
+plt.savefig("check_EE1.pdf")

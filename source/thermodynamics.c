@@ -4150,10 +4150,13 @@ int thermodynamics_reionization_function(
   case reio_mine://直接搞一条直线了
     /** - --> case z > z_reio_start */
     reionization_complete_redshift=6.1;//TODO:之后加一个参数：reionization_complete_redshift
+    //这段不能要，要不然会发生阶跃
+    /*
     if (z > preio->reionization_parameters[preio->index_re_reio_start]) {
       *x = preio->reionization_parameters[preio->index_re_xe_before];
     }
-    else if (z<reionization_complete_redshift){
+    */
+    if (z<reionization_complete_redshift){
       *x = preio->reionization_parameters[preio->index_re_xe_after];
       argument = (preio->reionization_parameters[preio->index_re_helium_fullreio_redshift] - z)
         /preio->reionization_parameters[preio->index_re_helium_fullreio_width];

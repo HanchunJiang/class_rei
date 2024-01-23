@@ -4,7 +4,7 @@ import numpy as np
 #=====input=======
 p1_value=0.001
 p1_name="r"
-p2_value=8.5
+p2_value=7.7
 p2_name="z_reio"
 
 steps=10 #sigma/step

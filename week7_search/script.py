@@ -2,12 +2,12 @@ import os
 import numpy as np
 
 #=====input=======
-p1_start=0.0001
-p1_end=0.002
-p1_step=0.00002
+p1_start=0.0004
+p1_end=0.0016
+p1_step=0.00005
 p1_name="r"
-p2_start=7.8
-p2_end=8.6
+p2_start=7.5
+p2_end=8.5
 p2_step=0.05
 p2_name="z_reio"
 

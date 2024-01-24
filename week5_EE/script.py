@@ -55,7 +55,10 @@ with open('result.txt','w') as f:
 print("======Fisher Finish======")
 #==========Power Spectrum=======
 p1_sigma=float(res[0])
-p2_sigma=float(res[1])
+p2_sigma=float(res[1])*10
+
+p1_value=0.001
+p2_value=8.15
 
 os_str = 'python3 week5_EE/powerspectrum_camb.py '
 for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges,open1]:

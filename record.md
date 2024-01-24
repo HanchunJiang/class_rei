@@ -218,3 +218,8 @@ thermodynamics_verbose=4
 
 # 0123
 总之就是旧的会产生阶跃，所以要换新的
+新的z_reio=7.7
+tau=0.059105
+
+r=0.001
+z_re=8.15

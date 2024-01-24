@@ -11,4 +11,4 @@ xe2=data2[0:1200,3]
 
 plt.plot(z1,xe1,label="reio_tanh")
 plt.plot(z2,xe2,label="reio_exp")
-plt.savefig("check_xe1.pdf")
+plt.savefig("check_xe1.jpg")

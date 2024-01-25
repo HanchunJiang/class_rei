@@ -16,7 +16,7 @@ delta2=0.0001
 open1=0#additional condition for powerspectrum
 
 #======power spectrum for fisher==========
-content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_mine\n','lensing=yes\n']
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_mine\n','lensing=yes\n','thermodynamics_verbose=4\n']
 
 #Fiducial
 with open('reio_mine.ini','w') as f:
@@ -55,7 +55,7 @@ with open('result.txt','w') as f:
 print("======Fisher Finish======")
 #==========Power Spectrum=======
 p1_sigma=float(res[0])
-p2_sigma=float(res[1])*10
+p2_sigma=float(res[1])*5
 
 p1_value=0.001
 p2_value=8.15

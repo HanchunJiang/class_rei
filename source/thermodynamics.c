@@ -1821,8 +1821,14 @@ int thermodynamics_output_summary(
     printf(" -> binned reionization gives optical depth = %f\n",pth->tau_reio);
     break;
 
-  case reio_many_tanh:
-    printf(" -> many-step reionization gives optical depth = %f\n",pth->tau_reio);
+  case reio_many_tanh://TODO加了输出tau到文件
+    {
+      FILE *fp;
+      printf(" -> many-step reionization gives optical depth = %f\n",pth->tau_reio);
+      fp = fopen("optical_depth.txt","a");
+      fprintf(fp,"%f\n",pth->tau_reio);
+      fclose(fp);
+    }
     break;
 
   case reio_inter:

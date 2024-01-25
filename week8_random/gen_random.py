@@ -22,7 +22,7 @@ points=[cols[i] for i in range(len(cols)) if i%2==0]
 errors=[cols[i] for i in range(len(cols)) if i%2==1]
 errors=[errors[i]-points[i] for i in range(len(points))]
 
-content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=4\n']
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n']
 
 def write_ps(zs,xes):
     with open('check.ini','w') as f:

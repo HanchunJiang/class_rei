@@ -13,6 +13,7 @@ try:
     p2_end=float(sys.argv[6])
     p2_step=float(sys.argv[7])
     p2_name=sys.argv[8]
+    num=sys.argv[9]
 
 except Exception as e:
     print("Input Error:", e)
@@ -31,8 +32,14 @@ for i in range(chi2.shape[0]):
             min_i=i
             min_j=j
 
-print(np.arange(p1_start,p1_end,p1_step)[min_i])
-print(np.arange(p2_start,p2_end,p2_step)[min_j])
+p1_best=np.arange(p1_start,p1_end,p1_step)[min_i]
+p2_best=np.arange(p2_start,p2_end,p2_step)[min_j]
+print(p1_best)
+print(p2_best)
+
+with open('week7result/best_fit1.txt','a') as f:
+    f.write(str(p1_best)+"\n")
+    f.write(str(p2_best)+"\n")
 
 fig = plt.figure()
 ay=fig.add_subplot()
@@ -41,5 +48,5 @@ contour=ay.contourf(X,Y,chi2)#,colors=['blue','lightsteelblue','white'])
 ay.set_xlabel(p2_name)
 ay.set_ylabel(p1_name)
 fig.colorbar(contour)
-plt.savefig("week7_search/chi_2D.jpg")
+plt.savefig("week7result/chi_2D"+str(num)+".jpg")
 plt.show()

@@ -65,7 +65,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('reio_mine00_cl_lensed.dat')
+data_fid=np.loadtxt('output/check00_cl_lensed.dat')
 BB_fid=data_fid[0:2000,2]
 EE_fid=data_fid[0:2000,1]
 #errors_BB=error(BB_fid,spectrum)

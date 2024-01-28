@@ -11,6 +11,7 @@ z_end=22
 xe_start=0
 xe_end=1.0
 ell=31
+tau_threshold=0.04
 
 with open("planck.csv", "r") as csvfile:
     reader = csv.reader(csvfile)
@@ -48,6 +49,12 @@ def record(zs,xes,totalz,totalxe):
      totalz.append(zs)
      totalxe.append(xes)
 
+def get_tau():
+     with open('file.txt','r') as f:  # 打开文件
+          lines = f.readlines()  # 读取所有行
+          last_line = lines[-1]  # 取最后一行
+     return float(last_line)
+
 def calculate_chi2(EE,EE_planck,errors,ell):
      sum=0
      #numerator=[]
@@ -78,7 +85,7 @@ while(suc<num_pair):
     EE=data1[0:ell-2,1]
     chi2=calculate_chi2(EE,EE_fid,errors,ell)
     os.system('rm -rf output/check*dat')
-    if chi2<np.sqrt(2*(ell-2)):
+    if chi2<np.sqrt(2*(ell-2)) and get_tau()>tau_threshold:
         record(zs,xes,totalz,totalxe)
         suc+=1
 

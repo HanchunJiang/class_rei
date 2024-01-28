@@ -11,11 +11,12 @@ try:
     p2_name=sys.argv[6]
     steps=float(sys.argv[7])
     ranges=float(sys.argv[8])
+    data_fid=np.loadtxt(sys.argv[9])
 
 except Exception as e:
     print("Input Error:", e)
 
-ell=10
+ell=2002
 #======parameters=========#
 Tcmb=2.75*10**6
 sigma_nu=2*np.pi/180/60
@@ -65,7 +66,7 @@ for i in np.arange(2,2002,1):
     spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
 
 #Cl_fid
-data_fid=np.loadtxt('reio_mine00_cl_lensed.dat')
+#data_fid=np.loadtxt('reio_mine00_cl_lensed.dat')
 BB_fid=data_fid[0:2000,2]
 EE_fid=data_fid[0:2000,1]
 #errors_BB=error(BB_fid,spectrum)

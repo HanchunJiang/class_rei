@@ -11,7 +11,7 @@ z_end=22
 xe_start=0
 xe_end=1.0
 ell=31
-tau_threshold=0.04
+tau_threshold=0.045
 
 with open("planck.csv", "r") as csvfile:
     reader = csv.reader(csvfile)
@@ -23,7 +23,7 @@ points=[cols[i] for i in range(len(cols)) if i%2==0]
 errors=[cols[i] for i in range(len(cols)) if i%2==1]
 errors=[errors[i]-points[i] for i in range(len(points))]
 
-content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n']
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n','r=0.001\n']
 
 def write_ps(zs,xes):
     with open('check.ini','w') as f:

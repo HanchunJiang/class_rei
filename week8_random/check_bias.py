@@ -4,7 +4,7 @@ import os
 total_xe=np.load("week8_random/totalxe.npy")
 total_z=np.load("week8_random/totalz.npy")
 
-content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n']
+content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n','r=0.001\n']
 
 def write_ps(zs,xes):
     with open('check.ini','w') as f:

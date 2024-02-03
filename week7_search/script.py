@@ -7,8 +7,8 @@ p1_start=0.0004
 p1_end=0.0016
 p1_step=0.0001
 p1_name="r"
-p2_start=7
-p2_end=12
+p2_start=6.5
+p2_end=10.5
 p2_step=0.1
 p2_name="z_reio"
 

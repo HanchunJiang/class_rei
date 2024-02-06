@@ -44,7 +44,7 @@ def draw_1D(plsq,posts,values,sigmas,names,i):
     plt.plot(np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps)),[func(j,plsq,values[i]) for j in np.arange(float(values[i]-ranges*sigmas[i]),float(values[i]+ranges*sigmas[i]),float(sigmas[i]/steps))])
     plt.xlabel(names[i])
     plt.ylabel("P("+names[i]+")")
-    plt.savefig("week8result/"+str(num)+"_"+names[i]+"1D_posterior.jpg")
+    plt.savefig("week8result1/"+str(num)+"_"+names[i]+"1D_posterior.jpg")
     plt.show()
     plt.cla()
 
@@ -64,7 +64,7 @@ best_fit_p2=np.arange(float(p2_value-ranges*p2_sigma),float(p2_value+ranges*p2_s
 print(best_fit_p1)
 print(best_fit_p2)
 
-with open('week8result/best_fit1.txt','a') as f:
+with open('week8result1/best_fit1.txt','a') as f:
     f.write(str(best_fit_p1)+"\n")
     f.write(str(best_fit_p2)+"\n")
 
@@ -86,7 +86,7 @@ p_value=[best_fit_p1,best_fit_p2]
 for i in [0,1]:
     N0=1e12
     plsq=fit(sigma0[i],N0,post_ps,p_value,p_sigma,i)
-    with open('week8result/sigma1.txt','a') as f:
+    with open('week8result1/sigma1.txt','a') as f:
         f.write(str(plsq[0])+"\n")
     draw_1D(plsq,post_ps,p_value,p_sigma,p_name,i)
 
@@ -98,7 +98,7 @@ contour=ay.contourf(X,Y,posterior(chi2_total))#,colors=['blue','lightsteelblue',
 ay.set_xlabel(p2_name)
 ay.set_ylabel(p1_name)
 fig.colorbar(contour)
-plt.savefig("week8result/post_"+str(num)+"2D.jpg")
+plt.savefig("week8result1/post_"+str(num)+"2D.jpg")
 plt.show()
 
 

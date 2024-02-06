@@ -12,6 +12,7 @@ try:
     steps=float(sys.argv[7])
     ranges=float(sys.argv[8])
     data_fid=np.loadtxt(sys.argv[9])
+    num=float(sys.argv[10])
 
 except Exception as e:
     print("Input Error:", e)
@@ -95,3 +96,4 @@ for i in range(chi2_total.shape[0]):
         chi2_total[i,j]=chi2_total[i,j]-max_chi
 
 np.save("chi21_Wishert.npy",chi2_total)
+np.save("week8result1/chi21"+str(num)+"_Wishert.npy",chi2_total)

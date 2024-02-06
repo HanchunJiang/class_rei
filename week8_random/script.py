@@ -13,10 +13,10 @@ except Exception as e:
     print("Input Error:", e)
 
 open1=0
-p1_sigma=0.0001
-p2_sigma=0.05
-ranges=7
-steps=4
+p1_sigma=0.0002
+p2_sigma=0.046
+ranges=4
+steps=8
 p1_name="r"
 p2_name="z_reio"
 
@@ -30,14 +30,14 @@ print("======PS Finish======")
 
 #=========chi2========
 os_str = 'python3 week5_EE/chi2_camb.py '
-for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges,'output/check00_cl_lensed.dat']:
+for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges,'output/check00_cl_lensed.dat',num]:
     os_str += str(i)+' '
 f = os.popen(os_str, 'r')
 f.close()
 print("======chi2 Finish======")
 
 #=========sigma========
-os.system("mkdir week8result")
+#os.system("mkdir week8result1")
 os_str = 'python3 week5_EE/sigma.py '
 for i in [p1_value,p1_sigma,p1_name,p2_value,p2_sigma,p2_name,steps,ranges,num]:
     os_str += str(i)+' '

@@ -1825,7 +1825,7 @@ int thermodynamics_output_summary(
     {
       FILE *fp;
       printf(" -> many-step reionization gives optical depth = %f\n",pth->tau_reio);
-      fp = fopen("optical_depth.txt","a");
+      fp = fopen("/home/hcjiang/class/optical_depth.txt","a");
       fprintf(fp,"%f\n",pth->tau_reio);
       fclose(fp);
     }

@@ -3,7 +3,7 @@ import os
 
 total_xe=np.load("week8_random/totalxe.npy")
 total_z=np.load("week8_random/totalz.npy")
-best_fit1=np.loadtxt("week7result/best_fit1.txt")
+best_fit1=np.loadtxt("week8result/best_fit1.txt")
 
 content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','thermodynamics_verbose=1\n','r=0.001\n']
 

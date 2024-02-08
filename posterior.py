@@ -3,7 +3,6 @@ import powerspectrum as ps
 import matplotlib.pyplot as plt
 from scipy.optimize import leastsq
 
-#TODO：改成继承，分成两个不同的类
 class posterior:
     p1_range=[]
     p2_range=[]
@@ -11,10 +10,10 @@ class posterior:
     post=[]
     best_fit=[]
     sigma=[]
-    sepectrum=[]
+    spectrum=[]
     ell=0
 
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p1_range=[],p2_range=[],sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" "):
+    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p1_range=[],p2_range=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         self.p1_range=p1_range.copy()
         self.p2_range=p2_range.copy()
         self.name=p_name.copy()
@@ -22,16 +21,18 @@ class posterior:
         self.spectrum=np.zeros(ell-2)
         for i in np.arange(2,ell,1):
             self.spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
+        if ps_exist==False:
+            ps.run_fit_ps([self.p1_range,self.p2_range],self.name,verbose=verbose)
         self.get_posterior_2D(fid_root,save_npy,save_root)
         self.get_best_fit()
 
     def chi2(self,Cl_fid,Cl):
         sum=0
-        for i in range(min(len(Cl),len(self.sepectrum))):
-            sum+=(2*(i+2)+1)*((Cl_fid[i]+self.sepectrum[i])/(Cl[i]+self.sepectrum[i])+np.log(Cl[i]+self.sepectrum[i])-(2*(i+2)-1)/(2*(i+2)+1)*np.log(Cl_fid[i]+self.sepectrum[i]))
+        for i in range(min(len(Cl),len(self.spectrum))):
+            sum+=(2*(i+2)+1)*((Cl_fid[i]+self.spectrum[i])/(Cl[i]+self.spectrum[i])+np.log(Cl[i]+self.spectrum[i])-(2*(i+2)-1)/(2*(i+2)+1)*np.log(Cl_fid[i]+self.spectrum[i]))
         return sum
     
-    def cal_post(chi2):
+    def cal_post(self,chi2):
         post=np.zeros((chi2.shape[0],chi2.shape[1]))
         for i in range(chi2.shape[0]):
             for j in range(chi2.shape[1]):
@@ -39,11 +40,11 @@ class posterior:
         return post
 
     def get_posterior_2D(self,fid_root,save_npy=False,save_root=" "):
-        ps.run_fit_ps([self.p1_range,self.p2_range],self.name)
+        #ps.run_fit_ps([self.p1_range,self.p2_range],self.name)
         chi2_total=np.zeros((len(self.p1_range),len(self.p2_range)))
-        data_fid=np.loadtxt(fid_root+'00_cl_lensed.dat')
-        BB_fid=data_fid[0:2000,2]
-        EE_fid=data_fid[0:2000,1]
+        data_fid=np.loadtxt(fid_root+'_cl_lensed.dat')
+        BB_fid=data_fid[0:self.ell-2,2]
+        EE_fid=data_fid[0:self.ell-2,1]
 
         for j in range(len(self.p1_range)):
             for i in range(len(self.p2_range)):
@@ -51,8 +52,8 @@ class posterior:
                     data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
                 else:
                     data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl_lensed.dat')
-                    BBs=data[0:self.ell-2,2]
-                    EEs=data[0:self.ell-2,1] 
+                BBs=data[0:self.ell-2,2]
+                EEs=data[0:self.ell-2,1] 
                 chi2_BB=self.chi2(BB_fid,BBs)
                 chi2_EE=self.chi2(EE_fid,EEs)
                 chi2_total[j,i]=chi2_BB+chi2_EE
@@ -93,13 +94,13 @@ class post_sigma(posterior):
     steps=1
     p_sigma_before=[]
     p_sigma=[]
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_value=[],p_sigma=[],steps=1,ranges=1,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" "):
+    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_value=[],p_sigma=[],ps_exsit=False,steps=1,ranges=1,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         p1_range=np.arange(float(p_value[0]-ranges*p_sigma[0]),float(p_value[0]+ranges*p_sigma[0]),float(p_sigma[0]/steps))
         p2_range=np.arange(float(p_value[1]-ranges*p_sigma[1]),float(p_value[1]+ranges*p_sigma[1]),float(p_sigma[1]/steps))
         self.ranges=ranges
         self.steps=steps
         self.p_sigma_before=p_sigma.copy()
-        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,sigma_nu,Tcmb,theta_nu,save_npy,save_root)
+        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,ps_exsit,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
         self.get_posterior_1D(p_sigma,steps)
     
     def get_posterior_1D(self,p_sigma,steps):
@@ -126,10 +127,10 @@ class post_sigma(posterior):
         print(plsq[0])
         return plsq[0],fit_array
     
-    def correct(self,fit_array,len_post,value,sigma):
+    def correct(fit_array,len_post,value,sigma,ranges):
         if len(fit_array)<len_post:#待测试
-            fit_array.append(value+self.ranges*sigma)
-        if len(fit_array)>len_post:
+            fit_array=np.append(fit_array,value+ranges*sigma)
+        elif len(fit_array)>len_post:
             fit_array=fit_array[0:-1]
         return fit_array.copy()
     
@@ -156,9 +157,9 @@ class post_sigma(posterior):
 
 #=====post for large and middle============#
 class post_search(posterior):
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_start=[],p_end=[],p_step=[],sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" "):
+    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_start=[],p_end=[],p_step=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         p1_range=np.arange(float(p_start[0]),float(p_end[0]),float(p_step[0]))
         p2_range=np.arange(float(p_start[1]),float(p_end[1]),float(p_step[1]))
-        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,sigma_nu,Tcmb,theta_nu,save_npy,save_root)
+        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,ps_exist,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
 
 

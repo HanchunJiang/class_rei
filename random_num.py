@@ -56,7 +56,7 @@ class random_num:
             f.write(str(sum)+'\n')
         return sum-ell+2
     
-    def get_tau():#还未测试
+    def get_tau():#还未测试 但看逻辑，只能用于构造函数
         with open('/home/hcjiang/class/optical_depth.txt','r') as f:  # 打开文件
             lines = f.readlines()  # 读取所有行
             last_line = lines[-1]  # 取最后一行

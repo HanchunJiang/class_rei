@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-def write_ps(file_name,p_name,p_value,reio_model="reio_camb",verbose=True,root=" "):#还未测试
+def write_ps(file_name,p_name,p_value,reio_model="reio_camb",verbose=True,root=" "):#能行
     '''
     write power spectrum for tanh and exp model
     file_name: *.ini
@@ -22,7 +22,7 @@ def write_ps(file_name,p_name,p_value,reio_model="reio_camb",verbose=True,root="
         for i in range(len(p_name)):
             f.write(p_name[i]+'='+str(round(p_value[i],10))+'\n')
 
-def write_ps_many(p_name,p_value,redshift,xe,file_name="check.ini",verbose=True,root="output/check"):#还未测试
+def write_ps_many(p_name,p_value,redshift,xe,file_name="check.ini",verbose=True,root="output/check"):#能过
     '''
     write power spectrum for many_tanh_model
     file_name: *.ini
@@ -36,23 +36,23 @@ def write_ps_many(p_name,p_value,redshift,xe,file_name="check.ini",verbose=True,
     content=['output=pCl,lCl\n','modes=s,t\n','reio_parametrization=reio_many_tanh\n','lensing=yes\n','root='+root+'\n']
     if verbose==True:
         content.append('thermodynamics_verbose=1\n')
-        with open(file_name,'w') as f:
-            for i in range(len(content)):
-                f.write(content[i])
-            for i in range(len(p_name)):
-                f.write(p_name[i]+'='+str(round(p_value[i],10))+'\n')
-            f.write("many_tanh_num=")
-            f.write(str(int(len(redshift)))+"\n")
-            f.write("many_tanh_z=")
-            for i in redshift:
-                 f.write(str(round(i,10))+",")
-            f.seek(f.tell() - 1, os.SEEK_SET)
-            f.write("\n")
-            f.write("many_tanh_xe=")
-            for i in xe:
-                 f.write(str(round(i,10))+",")
-            f.seek(f.tell() - 1, os.SEEK_SET)
-            f.write("\n")
+    with open(file_name,'w') as f:
+        for i in range(len(content)):
+            f.write(content[i])
+        for i in range(len(p_name)):
+            f.write(p_name[i]+'='+str(round(p_value[i],10))+'\n')
+        f.write("many_tanh_num=")
+        f.write(str(int(len(redshift)))+"\n")
+        f.write("many_tanh_z=")
+        for i in redshift:
+                f.write(str(round(i,10))+",")
+        f.seek(f.tell() - 1, os.SEEK_SET)
+        f.write("\n")
+        f.write("many_tanh_xe=")
+        for i in xe:
+                f.write(str(round(i,10))+",")
+        f.seek(f.tell() - 1, os.SEEK_SET)
+        f.write("\n")
 
 def run_fit_ps(p_ranges,p_names,file_name="chi1",verbose=True,root=" "):
     j=-1
@@ -60,10 +60,7 @@ def run_fit_ps(p_ranges,p_names,file_name="chi1",verbose=True,root=" "):
         j+=1
         p=0
         for p2 in p_ranges[1]:
-            if root==" ":
-                write_ps(file_name+'_'+str(j)+'_'+str(int(p/100)),p_names,[p1,p2],"reio_camb",verbose)
-            else:
-                write_ps(file_name+'_'+str(j)+'_'+str(int(p/100)),p_names,[p1,p2],"reio_camb",verbose,root)
+            write_ps(file_name+'_'+str(j)+'_'+str(int(p/100))+'_',p_names,[p1,p2],"reio_camb",verbose,root)
             os.system('./class '+file_name+'_'+str(j)+'_'+str(int(p/100))+'_.ini')
             p+=1
     os.system("rm -rf chi1*.ini")

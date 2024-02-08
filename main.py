@@ -30,8 +30,6 @@ parser.add_argument("--root_x_z", dest="root_x_z", default="output/", help="root
 #save results
 parser.add_argument("--root_result", dest="root_result", default="output/", help="root of results")
 
-parser.add_argument("--isTrain", dest="isTrain", action='store_true', help="train or test")
-parser.add_argument("--model_dir", dest="model_dir", default="./Model", help="Root directory to save learned model parameters")
 args = parser.parse_args()
 
 def main():

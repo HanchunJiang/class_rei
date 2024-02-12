@@ -85,6 +85,7 @@ class posterior:
         ay.set_ylabel(self.name[0])
         fig.colorbar(contour)
         plt.savefig(root+"2D.jpg")
+        plt.clf()
 
 #=====post for small and final============#
 class post_sigma(posterior):
@@ -112,7 +113,7 @@ class post_sigma(posterior):
                 self.post_p1[i]+=self.post[i,j]*p_sigma[1]/steps
                 self.post_p2[j]+=self.post[i,j]*p_sigma[0]/steps
     
-    def func(r,p,mu):
+    def func(self,r,p,mu):
         sigma=p[0]
         N=p[1]
         return N*np.exp(-(r-mu)**2/2/sigma**2)
@@ -122,12 +123,12 @@ class post_sigma(posterior):
     
     def fit(self,sigma0,N0,post,value,sigma):
         fit_array=np.arange(value-self.ranges*sigma,value+self.ranges*sigma,sigma/self.steps)
-        fit_array=self.correct(fit_array,len(post),value,sigma)
+        fit_array=self.correct(fit_array,len(post),value,sigma,self.ranges)
         plsq=leastsq(self.residuals,[sigma0,N0],args=(post,fit_array,value))
         print(plsq[0])
         return plsq[0],fit_array
     
-    def correct(fit_array,len_post,value,sigma,ranges):
+    def correct(self,fit_array,len_post,value,sigma,ranges):
         if len(fit_array)<len_post:#待测试
             fit_array=np.append(fit_array,value+ranges*sigma)
         elif len(fit_array)>len_post:

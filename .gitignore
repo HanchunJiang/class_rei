@@ -17,3 +17,4 @@ doc/manual/latex
 *.npy
 *.dat
 *.jpg
+*.log

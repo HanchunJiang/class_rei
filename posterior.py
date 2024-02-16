@@ -11,15 +11,16 @@ class posterior:
     best_fit=[]
     sigma=[]
     spectrum=[]
+    chi2_total=[]
     ell=0
 
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p1_range=[],p2_range=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
+    def __init__(self,ell_E=2002,ell_B=2002,fid_root=" ",p_name=["r","z_reio"],p1_range=[],p2_range=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         self.p1_range=p1_range.copy()
         self.p2_range=p2_range.copy()
         self.name=p_name.copy()
-        self.ell=ell
-        self.spectrum=np.zeros(ell-2)
-        for i in np.arange(2,ell,1):
+        self.ell=[ell_E,ell_B]
+        self.spectrum=np.zeros(np.max(self.ell)-2)
+        for i in np.arange(2,np.max(self.ell),1):
             self.spectrum[i-2]=(sigma_nu/Tcmb)**2*np.exp(i*(i+1)*theta_nu**2/8/np.log(2))
         if ps_exist==False:
             ps.run_fit_ps([self.p1_range,self.p2_range],self.name,verbose=verbose)
@@ -41,10 +42,10 @@ class posterior:
 
     def get_posterior_2D(self,fid_root,save_npy=False,save_root=" "):
         #ps.run_fit_ps([self.p1_range,self.p2_range],self.name)
-        chi2_total=np.zeros((len(self.p1_range),len(self.p2_range)))
+        self.chi2_total=np.zeros((len(self.p1_range),len(self.p2_range)))
         data_fid=np.loadtxt(fid_root+'_cl_lensed.dat')
-        BB_fid=data_fid[0:self.ell-2,2]
-        EE_fid=data_fid[0:self.ell-2,1]
+        BB_fid=data_fid[0:self.ell[1]-2,2]
+        EE_fid=data_fid[0:self.ell[0]-2,1]
 
         for j in range(len(self.p1_range)):
             for i in range(len(self.p2_range)):
@@ -52,28 +53,32 @@ class posterior:
                     data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_0'+str(i%100)+'_cl_lensed.dat')
                 else:
                     data=np.loadtxt('output/chi1_'+str(j)+'_'+str(int(i/100))+'_'+str(i%100)+'_cl_lensed.dat')
-                BBs=data[0:self.ell-2,2]
-                EEs=data[0:self.ell-2,1] 
+                BBs=data[0:self.ell[1]-2,2]
+                EEs=data[0:self.ell[0]-2,1] 
                 chi2_BB=self.chi2(BB_fid,BBs)
                 chi2_EE=self.chi2(EE_fid,EEs)
-                chi2_total[j,i]=chi2_BB+chi2_EE
+                self.chi2_total[j,i]=chi2_BB+chi2_EE
 
-        max_chi=np.max(chi2_total)
-        for i in range(chi2_total.shape[0]):
-           for j in range(chi2_total.shape[1]):
-                chi2_total[i,j]=chi2_total[i,j]-max_chi
+        max_chi=np.max(self.chi2_total)
+        for i in range(self.chi2_total.shape[0]):
+           for j in range(self.chi2_total.shape[1]):
+                self.chi2_total[i,j]=self.chi2_total[i,j]-max_chi
         
-        self.post=self.cal_post(chi2_total)
-
+        self.post=self.cal_post(self.chi2_total)
+        while((1-np.isfinite(self.post)).astype(np.bool).any()):
+            self.chi2_total+=500
+            self.post=self.cal_post(self.chi2_total)
+            #print(self.post)
+            #print(np.isfinite(self.post))
         if save_npy==True:
-            np.save(save_root+"post.npy",chi2_total)
+            np.save(save_root+"post.npy",self.post)
     
     def get_best_fit(self):
-        a=np.argmax(self.post)
-        maxi=int(a/self.post.shape[0])
-        maxj=a%self.post.shape[1]
-        best_fit_p1=self.p1_range[maxi]
-        best_fit_p2=self.p2_range[maxj]
+        a=np.argmin(self.chi2_total)
+        mini=int(a/self.chi2_total.shape[1])
+        minj=a%self.chi2_total.shape[1]
+        best_fit_p1=self.p1_range[mini]
+        best_fit_p2=self.p2_range[minj]
         self.best_fit=[best_fit_p1,best_fit_p2]
     
     def draw_2D(self,root="week8result1/post_"):
@@ -86,6 +91,7 @@ class posterior:
         fig.colorbar(contour)
         plt.savefig(root+"2D.jpg")
         plt.clf()
+        plt.cla()
 
 #=====post for small and final============#
 class post_sigma(posterior):
@@ -95,13 +101,13 @@ class post_sigma(posterior):
     steps=1
     p_sigma_before=[]
     p_sigma=[]
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_value=[],p_sigma=[],ps_exsit=False,steps=1,ranges=1,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
+    def __init__(self,ell_E=2002,ell_B=2002,fid_root=" ",p_name=["r","z_reio"],p_value=[],p_sigma=[],ps_exsit=False,steps=1,ranges=1,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         p1_range=np.arange(float(p_value[0]-ranges*p_sigma[0]),float(p_value[0]+ranges*p_sigma[0]),float(p_sigma[0]/steps))
         p2_range=np.arange(float(p_value[1]-ranges*p_sigma[1]),float(p_value[1]+ranges*p_sigma[1]),float(p_sigma[1]/steps))
         self.ranges=ranges
         self.steps=steps
         self.p_sigma_before=p_sigma.copy()
-        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,ps_exsit,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
+        posterior.__init__(self,ell_E,ell_B,fid_root,p_name,p1_range,p2_range,ps_exsit,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
         self.get_posterior_1D(p_sigma,steps)
     
     def get_posterior_1D(self,p_sigma,steps):
@@ -158,9 +164,9 @@ class post_sigma(posterior):
 
 #=====post for large and middle============#
 class post_search(posterior):
-    def __init__(self,ell=2002,fid_root=" ",p_name=["r","z_reio"],p_start=[],p_end=[],p_step=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
+    def __init__(self,ell_E=2002,ell_B=2002,fid_root=" ",p_name=["r","z_reio"],p_start=[],p_end=[],p_step=[],ps_exist=False,sigma_nu=2*np.pi/180/60,Tcmb=2.75*10**6,theta_nu=30*np.pi/180/60,save_npy=False,save_root=" ",verbose=True):
         p1_range=np.arange(float(p_start[0]),float(p_end[0]),float(p_step[0]))
         p2_range=np.arange(float(p_start[1]),float(p_end[1]),float(p_step[1]))
-        posterior.__init__(self,ell,fid_root,p_name,p1_range,p2_range,ps_exist,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
+        posterior.__init__(self,ell_E,ell_B,fid_root,p_name,p1_range,p2_range,ps_exist,sigma_nu,Tcmb,theta_nu,save_npy,save_root,verbose)
 
 

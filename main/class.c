@@ -73,7 +73,24 @@ int main(int argc, char **argv) {
     printf("\n\nError in output_init \n=>%s\n",op.error_message);
     return _FAILURE_;
   }
+  printf("index_md_tensor=%d\n",pt.index_md_tensors);
+  printf("index_ic_ad=%d\n",pt.index_ic_ad);
+  printf("index_tt_b=%d\n",tr.index_tt_b);
+  printf("l_size[index_md_tensor]=%d\n",tr.l_size[pt.index_md_tensors]);
+  printf("q=%f\n",tr.q[1000]);
 
+  double transfer=100;
+  FILE *fp;
+      fp = fopen("/home/hcjiang/class/transfer_function.txt","w+");
+  for(int index_l=0;index_l<tr.l_size[pt.index_md_tensors];index_l++){
+    for(int index_q=0;index_q<tr.q_size;index_q++){
+      transfer_functions_at_q_l(&tr,pt.index_md_tensors,pt.index_ic_ad,tr.index_tt_b,index_l,index_q,&transfer);
+      //transfer_functions_at_q(&tr,pt.index_md_tensors,pt.index_ic_ad,tr.index_tt_b,i,tr.q[1000],&transfer);
+      fprintf(fp,"l=%d,q=%f,transfer_function=%f\n",tr.l[index_l],tr.q[index_q],transfer);
+      //printf("l=%d,q=%f,transfer_function=%f\n",tr.l[index_l],tr.q[index_q],transfer);
+    }
+  }
+  fclose(fp);
   /****** all calculations done, now free the structures ******/
 
   if (distortions_free(&sd) == _FAILURE_) {

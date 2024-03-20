@@ -293,6 +293,16 @@ enum Hermite_Interpolation_Order {HERMITE3, HERMITE4, HERMITE6};
 extern "C" {
 #endif
 
+  int transfer_functions_at_q_l(
+                            struct transfer * ptr,
+                            int index_md,
+                            int index_ic,
+                            int index_tt,
+                            int index_l,
+                            int index_q,
+                            double * transfer_function
+                            );
+                          
   int transfer_functions_at_q(
                               struct transfer * ptr,
                               int index_md,

@@ -30,6 +30,52 @@
 #include "transfer.h"
 
 /**
+ * Transfer function \f$ \Delta_l^{X} (q[index_q]) \f$ at a given wavenumber q.
+ *
+ * For a given mode (scalar, vector, tensor), initial condition, type
+ * (temperature, polarization, lensing, etc) and multipole, computes
+ * the transfer function for an arbitrary value of q by interpolating
+ * between pre-computed values of q. This
+ * function can be called from whatever module at whatever time,
+ * provided that transfer_init() has been called before, and
+ * transfer_free() has not been called yet.
+ *
+ * Wavenumbers are called q in this module and k in the perturbation
+ * module. In flat universes k=q. In non-flat universes q and k differ
+ * through \f$ q2 = k2 + K(1+m)\f$, where m=0,1,2 for scalar, vector,
+ * tensor. q should be used throughout the transfer module, excepted
+ * when interpolating or manipulating the source functions S(k,tau)
+ * calculated in the perturbation module: for a given value of q, this
+ * should be done at the corresponding k(q).
+ *
+ * @param ptr        Input: pointer to transfer structure
+ * @param index_md   Input: index of requested mode
+ * @param index_ic   Input: index of requested initial condition
+ * @param index_tt   Input: index of requested type
+ * @param index_l    Input: index of requested multipole
+ * @param index_q    Input: index of requested wavenumber
+ * @param transfer_function Output: transfer function
+ * @return the error status
+ */
+
+int transfer_functions_at_q_l(
+                            struct transfer * ptr,
+                            int index_md,
+                            int index_ic,
+                            int index_tt,
+                            int index_l,
+                            int index_q,
+                            double * transfer_function
+                            ) {
+
+            *transfer_function=ptr->transfer[index_md]
+                                   [((index_ic * ptr->tt_size[index_md] + index_tt) * ptr->l_size[index_md] + index_l)
+                                   * ptr->q_size+index_q];
+             
+  return _SUCCESS_;
+}
+
+/**
  * Transfer function \f$ \Delta_l^{X} (q) \f$ at a given wavenumber q.
  *
  * For a given mode (scalar, vector, tensor), initial condition, type
@@ -84,8 +130,7 @@ int transfer_functions_at_q(
                                    1,
                                    ptr->error_message),
              ptr->error_message,
-             ptr->error_message);
-
+             ptr->error_message);            
   return _SUCCESS_;
 }
 

@@ -3,6 +3,54 @@
  */
 
 #include "class.h"
+int calculate_derivative(struct perturbations *ppt, struct transfer *ptr, int index_q_now, int *index_q_next, int index_n, double alpha, double k_0, double *results){
+  double next_k=k_0*pow(alpha,index_n);
+  double pi=3.1415926;
+  int index_q=index_q_now;
+  int l_size=ptr->l_size[ppt->index_md_tensors];
+  for(int i=0;i<l_size;i++)results[i]=0;
+  for(;index_q<ptr->q_size&&ptr->q[index_q]<next_k;index_q++){
+    for(int index_l=0;index_l<l_size;index_l++){
+      double transfer=0;
+      transfer_functions_at_q_l(ptr,ppt->index_md_tensors,ppt->index_ic_ad,ptr->index_tt_b,index_l,index_q,&transfer);
+      double temp=4*pi*pow(transfer,2)/ptr->q[index_q]*(ptr->q[index_q+1]-ptr->q[index_q]);
+      results[index_l]+=temp;
+    }
+  }
+  //printf("test=%e\n",results[30]);
+  *index_q_next=index_q;
+  return _SUCCESS_;
+}
+
+int my_fun(struct perturbations *ppt, struct transfer *ptr){
+  double k_0=0.0001;
+  double k_n=0.03;
+  double alpha=2.04;
+  int N_max=8;
+  int index_n=1;
+
+  printf("index_md_tensor=%d\n",ppt->index_md_tensors);
+  printf("index_ic_ad=%d\n",ppt->index_ic_ad);
+  printf("index_tt_b=%d\n",ptr->index_tt_b);
+  printf("l_size[index_md_tensor]=%d\n",ptr->l_size[ppt->index_md_tensors]);
+
+  double transfer=100;
+  double *transfers[8];
+  for(int i=0;i<8;i++) 
+    transfers[i] = (double *)malloc( ptr->l_size[ppt->index_md_tensors] * sizeof(double) );
+  FILE *fp;
+      fp = fopen("/home/hcjiang/class/transfer_function.txt","w+");
+  int index_q_start=0;
+  int index_q_end=0;
+  for (;ptr->q[index_q_start]<k_0;)index_q_start++;//寻找到开始积分的k的index在哪里
+  printf("%d\n",index_q_start);
+  for(;index_n<=N_max;index_n++)calculate_derivative(ppt,ptr,index_q_start,&index_q_end,index_n,alpha,k_0,transfers[index_n-1]);
+  printf("test=%e\n",transfers[3][15]);
+  //fprintf(fp,"l=%d,q=%f,transfer_function=%f\n",ptr->l[index_l],ptr->q[index_q],transfer);
+  fclose(fp);
+   for(int i=0;i<8;i++) free(transfers[i]); 
+  return _SUCCESS_;
+}
 
 int main(int argc, char **argv) {
 
@@ -73,25 +121,9 @@ int main(int argc, char **argv) {
     printf("\n\nError in output_init \n=>%s\n",op.error_message);
     return _FAILURE_;
   }
-  printf("index_md_tensor=%d\n",pt.index_md_tensors);
-  printf("index_ic_ad=%d\n",pt.index_ic_ad);
-  printf("index_tt_b=%d\n",tr.index_tt_b);
-  printf("l_size[index_md_tensor]=%d\n",tr.l_size[pt.index_md_tensors]);
-  printf("q=%f\n",tr.q[1000]);
-
-  double transfer=100;
-  FILE *fp;
-      fp = fopen("/home/hcjiang/class/transfer_function.txt","w+");
-  for(int index_l=0;index_l<tr.l_size[pt.index_md_tensors];index_l++){
-    for(int index_q=0;index_q<tr.q_size;index_q++){
-      transfer_functions_at_q_l(&tr,pt.index_md_tensors,pt.index_ic_ad,tr.index_tt_b,index_l,index_q,&transfer);
-      //transfer_functions_at_q(&tr,pt.index_md_tensors,pt.index_ic_ad,tr.index_tt_b,i,tr.q[1000],&transfer);
-      fprintf(fp,"l=%d,q=%f,transfer_function=%f\n",tr.l[index_l],tr.q[index_q],transfer);
-      //printf("l=%d,q=%f,transfer_function=%f\n",tr.l[index_l],tr.q[index_q],transfer);
-    }
-  }
-  fclose(fp);
+  
   /****** all calculations done, now free the structures ******/
+  my_fun(&pt,&tr);
 
   if (distortions_free(&sd) == _FAILURE_) {
     printf("\n\nError in distortions_free \n=>%s\n",sd.error_message);

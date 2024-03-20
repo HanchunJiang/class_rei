@@ -32,4 +32,8 @@
 #include "lensing.h"
 #include "output.h"
 
+/* my function*/
+int my_fun(struct perturbations *ppt, struct transfer *ptr);
+int calculate_derivative(struct perturbations *ppt, struct transfer *ptr, int index_q_now, int *index_q_next, int index_n, double alpha, double k_0, double *results);
+
 #endif
